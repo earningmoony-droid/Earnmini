@@ -7,6 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 <script src='https://libtl.com/sdk.js' data-zone='9125921' data-sdk='show_9125921'></script>
+<script src="https://ad.gigapub.tech/script?id=9315"></script>
 <style>
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 :root{--bg:#070b16;--g:#ffffff12;--gb:#ffffff22;--t:#eef1fb;--m:#8f9ac0;--c:#22d3ee;--v:#8b5cf6;--nav:#0d1326d9;--ok:#4ade80;--no:#f87171;--sh:0 12px 32px #0006;--e:cubic-bezier(.2,.8,.2,1)}
@@ -89,6 +90,10 @@ body[data-fx=off] #bg,body[data-fx=off] .orb{display:none}body[data-fx=off] .pg>
 .ring{position:relative;width:130px;height:130px;margin:6px auto 14px}.ring svg{width:100%;transform:rotate(-90deg)}.ring circle{fill:none;stroke:var(--gb);stroke-width:8}.ring circle+circle{stroke:var(--c);stroke-linecap:round;stroke-dasharray:276.5;stroke-dashoffset:276.5;transition:stroke-dashoffset .3s linear}.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:36px}
 .chatbox{height:46vh;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:4px}.bub{max-width:82%;padding:10px 14px;border-radius:22px;word-break:break-word;font-size:14px}.bub small{display:block;font-size:10px;opacity:.65;margin-top:2px}
 .bub.me{align-self:flex-end;background:linear-gradient(135deg,var(--c),var(--v));color:#fff;border-bottom-right-radius:6px}.bub.adm{align-self:flex-start;background:var(--g);border:1px solid var(--gb);border-bottom-left-radius:6px}.fast{color:#fbbf24}
+.cfw{perspective:700px;display:grid;place-items:center;margin:16px 0}.cf{width:124px;height:124px;position:relative;transform-style:preserve-3d;transition:transform 1.6s cubic-bezier(.2,.8,.2,1)}
+.cf>div{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;box-shadow:inset 0 0 0 6px #ffffff55,0 10px 26px #0006}
+.cf .h{background:radial-gradient(circle at 35% 30%,#fff6c2,#fbbf24 55%,#d97706)}.cf .t{background:radial-gradient(circle at 35% 30%,#fff,#a5b4fc 55%,#6366f1);transform:rotateY(180deg)}
+.chartwrap{position:relative}.crm{position:absolute;left:0;right:0;top:38%;text-align:center;font-size:46px;font-weight:800;pointer-events:none;text-shadow:0 4px 18px #0008}.crm.crash{color:var(--no)}
 </style></head><body>
 <div class="orb o1"></div><div class="orb o2"></div><canvas id="bg"></canvas><canvas id="fxc"></canvas>
 <header id="hd"></header><main id="app"></main><nav id="nav"></nav><div id="toast"></div><div id="modal"></div><div id="res"></div>
@@ -96,7 +101,7 @@ body[data-fx=off] #bg,body[data-fx=off] .orb{display:none}body[data-fx=off] .pg>
 /* ===== কনফিগ ===== */
 const CFG={SB_URL:'https://uhmyabgvxyqgsgvfwzzw.supabase.co',SB_KEY:'sb_publishable_DwgdEYCjZlehOQxisXPEeQ_aSPR-QNd',BOT:'earnminiapp079_bot',APP:'',SUPPORT:'https://t.me/+qa_ey--xPZZiMDJl'};
 /* AdMob ওয়েব/Mini App এ চলে না, AdSense এ rewarded নেই, তাই দুটো বন্ধ */
-const ADS=[{id:'monetag',name:'Monetag'},{id:'adsterra',name:'Adsterra'}];
+const ADS=[{id:'monetag',name:'Monetag'},{id:'gigapub',name:'GigaPub'},{id:'adsterra',name:'Adsterra'}];
 const ADSET={monetagFn:'show_9125921',adsterraUrl:'https://asiafilm.org/4/86823ef8c0dea39ddd93e75eae521be2'};
 const MIN_WATCH=15000;
 /* ===== আইকন (inline SVG, কোনো CDN লাগে না) ===== */
@@ -130,7 +135,9 @@ async function guard(fn){if(S.busy)return;S.busy=true;try{await fn()}catch(e){co
 /* ===== বিজ্ঞাপন ===== */
 async function runAd(a){
  if(a.id==='monetag'){const fn=ADSET.monetagFn;if(typeof window[fn]!=='function'){toast('Monetag SDK এখনো লোড হয়নি; কিছুক্ষণ পরে চেষ্টা করুন','err');return false}toast('বিজ্ঞাপন লোড হচ্ছে…');await window[fn]();return true}
+ if(a.id==='gigapub'){if(typeof window.showGiga!=='function'){toast('GigaPub SDK এখনো লোড হয়নি; কিছুক্ষণ পরে চেষ্টা করুন','err');return false}toast('বিজ্ঞাপন লোড হচ্ছে…');await window.showGiga();return true}
  return false}
+async function showAds(order,n){let shown=0;for(const p of order){const a=ADS.find(x=>x.id==p);while(shown<n){if(shown>0)toast('আরও '+(n-shown)+'টি বিজ্ঞাপন…');let ok=false;try{ok=await runAd(a)}catch(e){ok=false}if(!ok)break;shown++}if(shown>=n)break}return shown>=n}
 async function claimAd(sid){const r=await rpc('claim_ad',{p_session:sid});await sync();closeM();popup(true,'বিজ্ঞাপন সম্পন্ন!',r.reward,'coin যোগ হয়েছে',false)}
 function adWait(sid){const t0=Date.now();clearInterval(S.adT);
  openM(`<div style="text-align:center"><div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/><circle id="rg" cx="50" cy="50" r="44"/></svg><b id="cd">${MIN_WATCH/1000}</b></div><h3>বিজ্ঞাপন পেজে থাকুন</h3><div class="m" style="margin-bottom:6px">কাউন্টডাউন শেষ হলে নিচের বোতাম চালু হবে।</div><button id="clm" class="btn" disabled onclick="A.claim('${sid}')">coin নিন</button><button class="btn g" onclick="clearInterval(S.adT);closeM()">বাতিল</button></div>`);
@@ -146,6 +153,19 @@ async function taskClaim(sid){const r=await rpc('task_claim',{p_session:sid});aw
  popup(true,r.kind==='wait2'?'বোনাস পেয়েছেন!':'Site Visit সম্পন্ন!',r.reward,'coin যোগ হয়েছে',false)}
 async function chatLoad(){try{const l=await rpc('chat_list',{},true),e=$('#cm');if(!e||!Array.isArray(l))return;const end=!e.children.length||e.scrollHeight-e.scrollTop-e.clientHeight<60;
  e.innerHTML=l.length?l.map(m=>`<div class="bub ${m.from_admin?'adm':'me'}">${esc(m.body)}<small>${new Date(m.created_at).toLocaleTimeString('bn-BD',{hour:'2-digit',minute:'2-digit'})}</small></div>`).join(''):`<div class="empty">${I('chat')}আপনার প্রথম বার্তা পাঠান।</div>`;if(end)e.scrollTop=e.scrollHeight}catch(e){}}
+function crDraw(t,m,crashed){const c=$('#crChart');if(!c)return;const w=c.clientWidth||300,h=190,dpr=devicePixelRatio||1;if(c.width!==Math.round(w*dpr)){c.width=Math.round(w*dpr);c.height=Math.round(h*dpr)}
+ const x=c.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,w,h);const T=Math.max(8,t*1.12),M=Math.max(2,m*1.18),X=q=>14+q/T*(w-34),Y=v=>h-14-(Math.log(v)/Math.log(M))*(h-34),col=crashed?'#fb7185':'#34d399';
+ x.strokeStyle='#ffffff1f';x.lineWidth=1;for(let j=1;j<4;j++){x.beginPath();x.moveTo(0,h*j/4);x.lineTo(w,h*j/4);x.stroke()}
+ const st=Math.max(t/60,.05);x.beginPath();x.moveTo(X(0),Y(1));for(let q=st;q<t;q+=st)x.lineTo(X(q),Y(Math.pow(2,q/8)));x.lineTo(X(t),Y(Math.pow(2,t/8)));x.strokeStyle=col;x.lineWidth=4;x.lineCap=x.lineJoin='round';x.stroke();
+ x.lineTo(X(t),h);x.lineTo(X(0),h);const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,col+'55');g.addColorStop(1,col+'00');x.fillStyle=g;x.fill();
+ const px=X(t),py=Y(Math.pow(2,t/8));x.beginPath();x.arc(px,py,17,0,7);x.fillStyle=col+'33';x.fill();x.beginPath();x.arc(px,py,8,0,7);x.fillStyle=col;x.fill()}
+function crRun(){cancelAnimationFrame(S.crA);clearInterval(S.crT);
+ const f=()=>{const c=S.cr;if(!c||c.over)return;const t=(Date.now()-c.t0)/1000,m=Math.floor(Math.pow(2,t/8)*100)/100;crDraw(t,m,false);const e=$('#crM');if(e)e.textContent=m.toFixed(2)+'x';const p=$('#crP');if(p)p.textContent='+'+Math.floor(c.bet*m);S.crA=requestAnimationFrame(f)};f();
+ S.crT=setInterval(async()=>{const c=S.cr;if(!c||c.over||c.busy||S.page!=='games'||S.game!=='cr')return;try{const r=await rpc('crash_state',{p_round:c.id},true);if(S.cr!==c||c.over||c.busy)return;c.t0=Date.now()-r.t*1000;if(r.status!=='open')crFinish(c,r.crash,true,0,r.crash)}catch(e){}},1000)}
+async function crFinish(c,m,lost,payout,crash){c.over=true;cancelAnimationFrame(S.crA);clearInterval(S.crT);m=Number(m);S.crh=(S.crh||[]).concat(Number(crash));c.fin={t:Math.log2(Math.max(m,1))*8,m,crashed:lost};
+ try{await sync()}catch(e){}render();
+ if(lost)popup(false,'রকেট ভেঙে পড়েছে!',-c.bet,'ভেঙেছে '+m.toFixed(2)+'x এ, Cash Out করার আগেই!');
+ else popup(true,'Cash Out সফল!',payout-c.bet,m.toFixed(2)+'x এ বের হয়েছেন • রকেট ভাঙত '+Number(crash).toFixed(2)+'x এ')}
 /* ===== পেজ ===== */
 const NAV=[['home','home','হোম'],['ads','tv','Ads'],['games','game','গেম'],['refer','gift','রেফার'],['wallet','wallet','ওয়ালেট'],['me','user','প্রোফাইল']];
 const row=(ic,t,d,o,a,b,tag)=>`<div class="card it" onclick="${o}"><span class="ib" style="--a:${a};--b:${b}">${I(ic)}</span><div class="gx"><b>${t}</b><div class="m">${d}</div></div>${tag?`<span class="badge">${tag}</span>`:I('right','ch')}</div>`;
@@ -154,7 +174,11 @@ const skel=()=>'<div class="card sk" style="height:130px"></div><div class="card
 const P={},PK=5000,BN='০১২৩৪৫৬৭৮৯';
 const num=v=>+String(v||'').replace(/[০-৯]/g,c=>BN.indexOf(c)).replace(/[^\d.-]/g,'')||0;
 const eq=c=>(c*15/PK).toFixed(2);
-const CF=()=>{const c=Object.assign({verify_ads:5,verify_seconds:10,verify_required:false,wait_seconds:120,wait_reward:10,wait_daily:5,visit_seconds:120,visit_reward:15,visit_daily:3,site_url:ADSET.adsterraUrl},S.me.cfg||{});if(!c.site_url)c.site_url=ADSET.adsterraUrl;return c};
+const CF=()=>{const c=Object.assign({verify_ads:5,verify_seconds:10,verify_required:false,min_bet:10,max_bet:10000,ad_reward:10,adsterra_reward:5,ad_count:2,flip_payout:1.95,updown_payout:1.9,math_reward:10,puzzle_reward:10,wait_seconds:120,wait_reward:10,wait_daily:5,visit_seconds:120,visit_reward:15,visit_daily:3,site_url:ADSET.adsterraUrl},S.me.cfg||{});if(!c.site_url)c.site_url=ADSET.adsterraUrl;return c};
+const betBox=()=>{const c=CF(),mx=Math.min(c.max_bet,Number(S.me.bal)||0);return `<div class="m">আপনার coin wager (সর্বনিম্ন ${c.min_bet})</div>
+<div class="chips">${[10,50,100,500].map(v=>`<button class="chip ${S.bet==v?'on':''}" onclick="S.bet=${v};render()">${v}</button>`).join('')}<button class="chip" onclick="S.bet=${Math.max(c.min_bet,mx)};render()">Max</button></div>
+<input id="bet" type="text" inputmode="numeric" value="${S.bet}" oninput="S.bet=num(this.value)" placeholder="নিজের পরিমাণ লিখুন">`};
+const betOk=()=>{const c=CF(),b=Math.floor(S.bet)||0;if(b<c.min_bet||b>c.max_bet){toast('বাজি '+c.min_bet+' থেকে '+c.max_bet+' coin এর মধ্যে দিন','err');return false}if(b>(Number(S.me.bal)||0)){toast('পর্যাপ্ত coin নেই','err');return false}S.bet=b;return true};
 const vcard=()=>{const m=S.me,c=CF();if(m.verified===undefined)return '';
  return `<div class="card it" onclick="A.verify()"><span class="ib" style="--a:${m.verified?'#22c55e':'#f43f5e'};--b:${m.verified?'#15803d':'#ec4899'}">${I('check')}</span><div class="gx"><b>${m.verified?'অ্যাকাউন্ট Verified ✓':'অ্যাকাউন্ট ভেরিফাই করুন'}</b><div class="m">${m.verified?'আজ Fast Payment-এর জন্য প্রস্তুত':'রোজ '+c.verify_ads+'টি বিজ্ঞাপন দেখুন, Fast Payment পান ('+(m.verify_count||0)+'/'+c.verify_ads+')'}</div></div>${I('right','ch')}</div>`};
 const vnote=()=>{const m=S.me,c=CF();if(m.verified===undefined)return '';
@@ -167,27 +191,29 @@ P.home=()=>{const m=S.me,b=Number(m.bal)||0;return `<div class="card hero"><div 
 ${vcard()}<div class="card"><div class="row"><b class="ttl">${I('cal')} Daily Check-in</b><span class="pill">+50 coin</span></div><button class="btn shine" ${m.checked?'disabled':''} onclick="A.ci()">${m.checked?I('check')+' আজকের check-in সম্পন্ন':'Check-in করুন'}</button></div>
 <div class="card"><div class="qa">${[['tv','Ads','ads','#8b5cf6','#6366f1'],['game','গেম','games','#22d3ee','#3b82f6'],['gift','রেফার','refer','#f472b6','#ec4899'],['wallet','ওয়ালেট','wallet','#4ade80','#16a34a']].map(([i,l,p,a,b])=>`<button onclick="go('${p}')"><span class="ib" style="--a:${a};--b:${b}">${I(i)}</span>${l}</button>`).join('')}</div></div>
 <div class="card"><h3>সাম্প্রতিক কার্যক্রম</h3>${hl(S.hist.slice(0,5))}</div>`};
-P.ads=()=>{const n=S.me.ads_today||0;return `<h3 class="ttl">${I('tv')} Ads Center</h3><div class="card"><div class="row"><b>আজকের বিজ্ঞাপন</b><span class="pill">${n}/20</span></div><div class="bar"><i style="width:${Math.min(100,n*5)}%"></i></div><div class="m">প্রতিটি বিজ্ঞাপনে +5 coin • দৈনিক সর্বোচ্চ ২০টি</div></div>
-${row('spark','Monetag','Rewarded Ad • সরাসরি coin',"A.adpanel('monetag')",'#8b5cf6','#6366f1')}
-${row('link','Adsterra','Direct Link • ১৫ সেকেন্ড',"A.adpanel('adsterra')",'#22c55e','#15803d')}
+P.ads=()=>{const n=S.me.ads_today||0;return `<h3 class="ttl">${I('tv')} Ads Center</h3><div class="card"><div class="row"><b>আজকের বিজ্ঞাপন</b><span class="pill">${n}/20</span></div><div class="bar"><i style="width:${Math.min(100,n*5)}%"></i></div><div class="m">${CF().ad_count}টি বিজ্ঞাপন দেখলে +${CF().ad_reward} coin • দৈনিক সর্বোচ্চ ২০টি</div></div>
+${row('spark','Monetag',`${CF().ad_count}টি বিজ্ঞাপন • +${CF().ad_reward} coin`,"A.adpanel('monetag')",'#8b5cf6','#6366f1')}
+${row('play','GigaPub',`${CF().ad_count}টি বিজ্ঞাপন • +${CF().ad_reward} coin`,"A.ad('gigapub')",'#f59e0b','#ef4444')}
+${row('link','Adsterra',`Direct Link • ১৫ সেকেন্ড • +${CF().adsterra_reward} coin`,"A.adpanel('adsterra')",'#22c55e','#15803d')}
 <h3 class="ttl" style="margin-top:6px">${I('coin')} More Earnings</h3>
 ${row('cal','২ মিনিট বোনাস','অ্যাপে ২ মিনিট থাকুন • +'+CF().wait_reward+' coin',"A.task('wait2')",'#f472b6','#ec4899',(S.me.wait_today||0)+'/'+CF().wait_daily)}
 ${row('link','Site Visit','সাইটে ২ মিনিট থাকুন • +'+CF().visit_reward+' coin',"A.task('visit2')",'#38bdf8','#0ea5e9',(S.me.visit_today||0)+'/'+CF().visit_daily)}`};
-const GM=[['trend','AI Trading Up/Down','দাম বাড়বে না কমবে অনুমান করুন',"S.game='ud';render()",'#22d3ee','#3b82f6'],['ticket','Scratch Card','১০ coin, প্রাইজ জিতুন',"S.game='sc';S.sc=null;render()",'#f472b6','#ec4899'],['calc','AI Math','সঠিক উত্তর দিলে +3 coin',"A.mq('math')",'#fbbf24','#f97316'],['puzzle','Puzzle Challenge','সংখ্যার ধাঁধা মেলান, +5 coin',"A.mq('puzzle')",'#8b5cf6','#6366f1'],['spin','Spin Wheel','প্রতিদিন ১টি free spin',"S.game='sp';render()",'#4ade80','#16a34a'],['whale','Lake Whale','তিমি খুঁজুন, জিতলে 56 coin',"S.game='wh';S.wh=null;render()",'#38bdf8','#0ea5e9']];
-const WP=[2,5,3,10,2,8,5,20];
+const GM=[['trend','AI Trading Up/Down','দাম বাড়বে না কমবে অনুমান করুন',"S.game='ud';render()",'#22d3ee','#3b82f6'],['coin','Coin Flip','৫০% সম্ভাবনা • হেড না টেইল?',"S.game='cf';render()",'#fbbf24','#f59e0b'],['spark','Sky Rocket','রকেট ভাঙার আগে Cash Out করুন',"S.game='cr';render()",'#f43f5e','#8b5cf6'],['ticket','Scratch Card','১০ coin, প্রাইজ জিতুন',"S.game='sc';S.sc=null;render()",'#f472b6','#ec4899'],['calc','AI Math','সঠিক উত্তর দিলে +10 coin',"A.mq('math')",'#fbbf24','#f97316'],['puzzle','Puzzle Challenge','সংখ্যার ধাঁধা মেলান, +10 coin',"A.mq('puzzle')",'#8b5cf6','#6366f1'],['spin','Spin Wheel','প্রতিদিন ১টি free spin',"S.game='sp';render()",'#4ade80','#16a34a'],['whale','Lake Whale','তিমি খুঁজুন, জিতলে 56 coin',"S.game='wh';S.wh=null;render()",'#38bdf8','#0ea5e9']];
+const WP=[5,10,8,20,5,15,10,50];
 function wheel(){const n=8,cols=['#22d3ee','#8b5cf6','#f472b6','#4ade80','#fbbf24','#38bdf8','#fb7185','#a78bfa'],P2=(a,r)=>[(110+r*Math.cos(a)).toFixed(1),(110+r*Math.sin(a)).toFixed(1)];let s='';
  for(let i=0;i<n;i++){const a0=i*2*Math.PI/n-Math.PI/2,a1=(i+1)*2*Math.PI/n-Math.PI/2,am=(a0+a1)/2,t=P2(am,66);
   s+=`<path d="M110 110L${P2(a0,100).join(',')}A100 100 0 0 1 ${P2(a1,100).join(',')}Z" fill="${cols[i]}" stroke="#ffffff55" stroke-width="2"/><text x="${t[0]}" y="${t[1]}" transform="rotate(${(am*180/Math.PI+90).toFixed(1)} ${t[0]} ${t[1]})" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-weight="800" font-size="18">${WP[i]}</text>`}
  return `<div class="wh"><i class="ptr"></i><svg id="wheel" viewBox="0 0 220 220" style="transform:rotate(${S.wrot||0}deg)">${s}<circle cx="110" cy="110" r="16" fill="#0b1020"/></svg></div>`}
 P.games=()=>{const g=S.game;
- if(!g)return `<h3 class="ttl">${I('game')} Games</h3>`+row('play','Reward Ad','বিজ্ঞাপন দেখে +5 coin',"A.ad('monetag')",'#fbbf24','#f97316')+GM.map(([i,t,d,o,a,b])=>row(i,t,d,o,a,b)).join('');
+ if(!g)return `<h3 class="ttl">${I('game')} Games</h3>`+row('play','Reward Ad','বিজ্ঞাপন দেখে +'+CF().ad_reward+' coin',"A.ad('any')",'#fbbf24','#f97316')+GM.map(([i,t,d,o,a,b])=>row(i,t,d,o,a,b)).join('');
  const back=`<button class="btn g s" onclick="A.back()">${I('left')} ফিরে যান</button>`,W=h=>`${back}<div class="card" style="margin-top:12px">${h}</div>`;
- if(g=='ud')return W(`<h3 class="ttl">${I('trend')} AI Trading Simulator</h3><div class="m">coin-ভিত্তিক simulated game; real market নয়। দাম বাড়বে না কমবে অনুমান করুন, জিতলে ১.৯ গুণ।</div><div class="chartwrap"><canvas id="tradeChart" height="180"></canvas><div class="row m" style="padding:0 14px"><span>Demo Price</span><b id="tradePrice">--</b></div></div><div class="m">আপনার coin wager</div>
- <div class="chips">${[50,100,200].map(b=>`<button class="chip ${S.bet==b?'on':''}" onclick="S.bet=${b};render()">${b} ${I('coin')}</button>`).join('')}</div>
- <div class="row"><button class="btn up" onclick="A.ud('up')">${I('up')} UP</button><button class="btn dn" onclick="A.ud('down')">${I('down')} DOWN</button></div>`);
+ if(g=='ud')return W(`<h3 class="ttl">${I('trend')} AI Trading Simulator</h3><div class="m">coin-ভিত্তিক simulated game; real market নয়। দাম বাড়বে না কমবে অনুমান করুন, জিতলে ${CF().updown_payout} গুণ।</div><div class="chartwrap"><canvas id="tradeChart" height="180"></canvas><div class="row m" style="padding:0 14px"><span>Demo Price</span><b id="tradePrice">--</b></div></div>${betBox()}<div class="m" style="margin:6px 0">জিতলে +${Math.floor((S.bet||0)*CF().updown_payout)-(S.bet||0)} coin • হারলে -${S.bet||0} coin</div>
+ <div class="row"><button class="btn up" onclick="A.ud('up')">${I('up')} UP</button><button class="btn dn" onclick="A.ud('down')">${I('down')} DOWN</button></div><div class="m" style="text-align:center;margin-top:10px">${(S.udh||[]).map(x=>x=='W'?'<b class="okc">W</b>':'<b class="noc">L</b>').join(' ')}</div>`);
+ if(g=='cf')return W(`<h3 class="ttl">${I('coin')} Coin Flip</h3><div class="m">৫০% সম্ভাবনা: জিতলে ${CF().flip_payout} গুণ, হারলে বাজির coin যাবে। দিক বেছে ফ্লিপ করুন।</div><div class="cfw"><div id="cf" class="cf" style="transform:rotateY(${S.frot||0}deg)"><div class="h"><b style="font-size:58px;color:#92400e">E</b></div><div class="t"><b style="font-size:50px;color:#fff">★</b></div></div></div><div class="chips"><button class="chip ${S.cfs!='t'?'on':''}" onclick="S.cfs='h';render()">Heads</button><button class="chip ${S.cfs=='t'?'on':''}" onclick="S.cfs='t';render()">Tails</button></div>${betBox()}<button class="btn shine" onclick="A.flip()">Flip করুন</button>`);
+ if(g=='cr'){const cr=S.cr,live=cr&&!cr.over;return W(`<h3 class="ttl">${I('spark')} Sky Rocket</h3><div class="m">রকেট ওড়ার সাথে multiplier বাড়ে। রকেট ভেঙে পড়ার আগেই Cash Out করুন! যত দেরি, তত বেশি লাভ, কিন্তু ঝুঁকিও বেশি।</div><div class="chartwrap"><canvas id="crChart" height="190"></canvas><div class="crm" id="crM">1.00x</div></div>${live?'':betBox()}${live?`<button class="btn up" onclick="A.crCash()">Cash Out <span id="crP"></span></button>`:`<button class="btn shine" onclick="A.crStart()">${I('play')} শুরু করুন</button>`}<div class="m" style="margin-top:10px;text-align:center">${(S.crh||[]).length?'সাম্প্রতিক: '+S.crh.slice(-8).map(x=>`<b class="${x>=2?'okc':x<1.5?'noc':''}">${x.toFixed(2)}x</b>`).join(' • '):''}</div>`)}
  if(g=='sc')return W(`<h3 class="ttl">${I('ticket')} Scratch Card</h3>${S.sc==null?`<div class="empty">${I('ticket')}কার্ড কিনে স্ক্র্যাচ করুন</div>`:`<div class="sc">${esc(S.sc)} ${I('coin')}<canvas id="scv" width="280" height="120"></canvas></div>`}<button class="btn" ${S.scPend?'disabled':''} onclick="A.scr()">${S.sc==null?'কার্ড কিনুন (১০ coin)':'আরেকটি কার্ড (১০ coin)'}</button>`);
- if(g=='mq'||g=='pz'){const q=S.mq.q;return W(`<h3 class="ttl">${I(g=='pz'?'puzzle':'calc')} ${g=='pz'?'Puzzle Challenge':'AI Math'}</h3><div class="m">সঠিক উত্তরে ${g=='pz'?5:3} coin পাবেন। বাংলা বা ইংরেজি সংখ্যা লিখতে পারেন।</div><div class="qbox">${esc(q)}${/\?$/.test(q)?'':' = ?'}</div><input id="ans" type="text" inputmode="numeric" placeholder="উত্তর লিখুন" onkeydown="event.key=='Enter'&&A.ma()"><button class="btn" onclick="A.ma()">উত্তর দিন</button>`)}
- if(g=='sp'){const ok=S.me.spin_left!==0;return W(`<h3 class="ttl">${I('spin')} Spin Wheel</h3><div class="m">প্রতিদিন ১টি free spin। 2 থেকে 20 coin পর্যন্ত প্রাইজ!</div>${wheel()}<button class="btn" ${ok?'':'disabled'} onclick="A.spin()">${ok?'Spin করুন':'আজকের free spin শেষ'}</button>`)}
+ if(g=='mq'||g=='pz'){const q=S.mq.q;return W(`<h3 class="ttl">${I(g=='pz'?'puzzle':'calc')} ${g=='pz'?'Puzzle Challenge':'AI Math'}</h3><div class="m">সঠিক উত্তরে ${g=='pz'?CF().puzzle_reward:CF().math_reward} coin পাবেন। বাংলা বা ইংরেজি সংখ্যা লিখতে পারেন।</div><div class="qbox">${esc(q)}${/\?$/.test(q)?'':' = ?'}</div><input id="ans" type="text" inputmode="numeric" placeholder="উত্তর লিখুন" onkeydown="event.key=='Enter'&&A.ma()"><button class="btn" onclick="A.ma()">উত্তর দিন</button>`)}
+ if(g=='sp'){const ok=S.me.spin_left!==0;return W(`<h3 class="ttl">${I('spin')} Spin Wheel</h3><div class="m">প্রতিদিন ১টি free spin। 5 থেকে 50 coin পর্যন্ত প্রাইজ!</div>${wheel()}<button class="btn" ${ok?'':'disabled'} onclick="A.spin()">${ok?'Spin করুন':'আজকের free spin শেষ'}</button>`)}
  if(g=='wh')return W(`<h3 class="ttl">${I('whale')} Lake Whale</h3><div class="m">৩টি লেকের একটিতে তিমি লুকিয়ে আছে। খুঁজে পেলে 56 coin (এন্ট্রি 20 coin)।</div><div class="lakes">${[0,1,2].map(i=>`<button class="lake ${S.wh&&S.wh.whale==i?'hit':''} ${S.wh&&S.wh.pick==i?'pick':''}" onclick="A.wh(${i})">${S.wh&&S.wh.whale==i?I('whale'):I('spark')}</button>`).join('')}</div><div class="m" style="text-align:center">একটি লেক বেছে নিন</div>`)};
 const WM=[['bkash','bKash','wallet'],['nagad','Nagad','wallet'],['ff','Free Fire Diamond','game']];
 P.wallet=()=>{const ff=S.wm=='ff',q=S.wq||1,amt=q*PK,b=Number(S.me.bal)||0,m=S.me;return `<div class="card"><h3 class="ttl">${I('wallet')} Withdraw</h3><div class="m">ব্যালেন্স: ${I('coin')} <span class="bal">${b}</span>${m.pending?' • অপেক্ষমাণ: '+m.pending:''}</div>
@@ -237,7 +263,7 @@ document.addEventListener('pointerout',e=>{const c=e.target.closest&&e.target.cl
 document.addEventListener('pointerdown',e=>{const b=e.target.closest('.btn,.chip,nav button');if(!b)return;hap();const r=b.getBoundingClientRect(),d=Math.max(r.width,r.height)*2,s=document.createElement('i');s.className='rp';s.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;b.appendChild(s);setTimeout(()=>s.remove(),600)});
 function countUp(){const to=Number(S.me.bal)||0,from=Number(S.shown??to)||0;S.shown=to;if(from===to||FX.mode=='off')return;const t0=performance.now(),els=document.querySelectorAll('.bal');
  (function f(t){const k=Math.min(1,(t-t0)/700),v=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));els.forEach(x=>x.textContent=v);if(k<1)requestAnimationFrame(f)})(t0)}
-function popup(ok,title,amt,sub='',ad=S.page==='games'&&(S.me.ads_today||0)<20){const r=$('#res');r.innerHTML=`<div class="rc"><div class="rb ${ok?'w':'l'}">${I(ok?'check':'x')}</div><h3>${title}</h3>${amt!=null?`<div class="ramt ${ok?'okc':'noc'}">${amt>0?'+':''}${amt} ${I('coin')}</div>`:''}<div class="m" style="margin-bottom:6px">${sub}</div><button class="btn" onclick="$('#res').classList.remove('on')">ঠিক আছে</button>${ad?`<button class="btn g" onclick="$('#res').classList.remove('on');A.ad('monetag')">${I('play')} বিজ্ঞাপন দেখে +5 coin</button>`:''}</div>`;r.classList.add('on');if(ok){burst();hapN('success')}else hapN('error')}
+function popup(ok,title,amt,sub='',ad=S.page==='games'&&(S.me.ads_today||0)<20){const r=$('#res');r.innerHTML=`<div class="rc"><div class="rb ${ok?'w':'l'}">${I(ok?'check':'x')}</div><h3>${title}</h3>${amt!=null?`<div class="ramt ${ok?'okc':'noc'}">${amt>0?'+':''}${amt} ${I('coin')}</div>`:''}<div class="m" style="margin-bottom:6px">${sub}</div><button class="btn" onclick="$('#res').classList.remove('on')">ঠিক আছে</button>${ad?`<button class="btn g" onclick="$('#res').classList.remove('on');A.ad('any')">${I('play')} বিজ্ঞাপন দেখে +${CF().ad_reward} coin</button>`:''}</div>`;r.classList.add('on');if(ok){burst();hapN('success')}else hapN('error')}
 $('#res').onclick=e=>{if(e.target.id==='res')e.target.classList.remove('on')};
 let trT;
 function trInit(){if(S.tr)return;let p=100;const v=[p];for(let i=0;i<44;i++){p+=(Math.random()-.5)*1.6;v.push(p)}S.tr={v,e:null}}
@@ -258,19 +284,19 @@ function initScratch(){const c=$('#scv');if(!c||S.sc==null||S.scDone)return;cons
  c.onpointerdown=c.onpointermove=m;c.onpointerup=chk}
 async function revealSc(){const p=S.sc;S.scPend=0;try{await sync()}catch(e){}render();popup(p>0,p>0?'অভিনন্দন!':'এবার হয়নি',p>0?p:null,p>0?'coin জিতেছেন':'আরেকটি কার্ড চেষ্টা করুন')}
 /* ===== অ্যাকশন ===== */
-const FAQ=[[/withdraw|উত্তোলন|টাকা|bkash|nagad|বিকাশ|নগদ|diamond|ডায়মন্ড/i,'সর্বনিম্ন 5000 coin। 5000 coin = ৳15 (bKash/Nagad) বা 25 Diamond (Free Fire)। ওয়ালেট পেজ থেকে Withdraw করুন; যাচাইয়ের পর পেমেন্ট করা হয়।'],[/\bads?\b|বিজ্ঞাপন|এড/i,'Ads পেজে বিজ্ঞাপন পুরো দেখলে +5 coin, দিনে সর্বোচ্চ ২০টি। Adsterra-তে ১৫ সেকেন্ড থেকে "coin নিন" চাপুন।'],[/refer|রেফার|invite|বন্ধু/i,'রেফার পেজের লিংক বন্ধুকে পাঠান; সে যোগ দিলে আপনি +100 coin পাবেন।'],[/check|চেক|daily|প্রতিদিন/i,'হোমে Daily Check-in করলে প্রতিদিন +50 coin।'],[/game|গেম|math|puzzle|spin|scratch|whale/i,'Math +3, Puzzle +5, Spin প্রতিদিন ১টি free (2–20 coin)। Trading, Scratch ও Whale-এ coin হারানোর ঝুঁকি আছে।'],[/coin|কয়েন|balance|ব্যালেন্স|uid/i,'ব্যালেন্স ও UID হোম এবং প্রোফাইল পেজে দেখা যায়।']];
+const FAQ=[[/withdraw|উত্তোলন|টাকা|bkash|nagad|বিকাশ|নগদ|diamond|ডায়মন্ড/i,'সর্বনিম্ন 5000 coin। 5000 coin = ৳15 (bKash/Nagad) বা 25 Diamond (Free Fire)। ওয়ালেট পেজ থেকে Withdraw করুন; যাচাইয়ের পর পেমেন্ট করা হয়।'],[/\bads?\b|বিজ্ঞাপন|এড/i,'Ads পেজে বিজ্ঞাপন পুরো দেখলে coin পাবেন, দিনে সর্বোচ্চ ২০টি। Adsterra-তে ১৫ সেকেন্ড থেকে "coin নিন" চাপুন।'],[/refer|রেফার|invite|বন্ধু/i,'রেফার পেজের লিংক বন্ধুকে পাঠান; সে যোগ দিলে আপনি +100 coin পাবেন।'],[/check|চেক|daily|প্রতিদিন/i,'হোমে Daily Check-in করলে প্রতিদিন +50 coin।'],[/game|গেম|math|puzzle|spin|scratch|whale/i,'Math ও Puzzle সঠিক উত্তরে +10 coin, Spin প্রতিদিন ১টি free। Trading, Coin Flip, Sky Rocket, Scratch ও Whale-এ coin হারানোর ঝুঁকি আছে।'],[/coin|কয়েন|balance|ব্যালেন্স|uid/i,'ব্যালেন্স ও UID হোম এবং প্রোফাইল পেজে দেখা যায়।']];
 const faq=q=>(FAQ.find(([re])=>re.test(q))||[0,'এই বিষয়ে নিশ্চিত নই। Profile → Support এ যোগাযোগ করুন।'])[1];
 const A={
  ci:()=>guard(async()=>{await rpc('daily_checkin');await sync();S.me.checked=true;popup(true,'Check-in সম্পন্ন!',50,'আগামীকাল আবার আসুন')}),
- ad:id=>guard(async()=>{const a=ADS.find(x=>x.id==id),ss=await rpc('start_ad',{p_provider:id});
-  if(id==='adsterra'){closeM();tg.openLink(ADSET.adsterraUrl);return adWait(ss.id)}
-  let ok=false;try{ok=await runAd(a)}catch(e){ok=false}
-  if(!ok)return toast('বিজ্ঞাপন দেখানো হয়নি, coin যোগ হয়নি','err');
-  await claimAd(ss.id)}),
+ ad:id=>guard(async()=>{
+  if(id==='adsterra'){const ss=await rpc('start_ad',{p_provider:id});closeM();tg.openLink(ADSET.adsterraUrl);return adWait(ss.id)}
+  const order=id==='any'?['monetag','gigapub']:[id],ss=await rpc('start_ad',{p_provider:order[0]});
+  if(await showAds(order,CF().ad_count))return await claimAd(ss.id);
+  toast('এখন বিজ্ঞাপন পাওয়া যাচ্ছে না, coin যোগ হয়নি। একটু পরে চেষ্টা করুন','err')}),
  claim:sid=>guard(()=>claimAd(sid)),
- ud:d=>guard(async()=>{trInit();const r=await rpc('play_updown',{p_bet:S.bet,p_dir:d}),t=S.tr,e=t.v.at(-1),up=r.dir=='up',sg=up?1:-1;t.e=e;
+ ud:d=>guard(async()=>{if(!betOk())return;trInit();const r=await rpc('play_updown',{p_bet:S.bet,p_dir:d}),t=S.tr,e=t.v.at(-1),up=r.dir=='up',sg=up?1:-1;t.e=e;
   for(let i=1;i<=12;i++){const last=t.v.at(-1),goal=e+sg*(1.5+Math.random())*i/12;let nx=last+(goal-last)*.5+(Math.random()-.5)*.5;if(i==12)nx=e+sg*(1.3+Math.random());trTick(nx-last);await wait(230)}
-  await sync();t.e=null;const n=r.win?r.payout-S.bet:-S.bet;
+  await sync();t.e=null;const n=r.win?r.payout-S.bet:-S.bet;S.udh=(S.udh||[]).concat(r.win?'W':'L').slice(-8);
   popup(r.win,r.win?'আপনি জিতেছেন!':'আপনি হেরেছেন',n,'দাম '+(up?'বেড়েছে '+I('up'):'কমেছে '+I('down')))}),
  scr:()=>guard(async()=>{if(S.scPend)return toast('আগে কার্ডটি স্ক্র্যাচ করুন');const r=await rpc('scratch_card');S.sc=r.prize;S.scDone=0;S.scPend=1}),
  mq:k=>guard(async()=>{S.mq=await rpc('math_new',{kind:k});S.game=k=='puzzle'?'pz':'mq'}),
@@ -287,9 +313,14 @@ const A={
   popup(true,'অনুরোধ জমা হয়েছে',null,wr&&wr.fast?'⚡ Fast Payment তালিকায় আছেন':'যাচাইয়ের পর পেমেন্ট করা হবে। রোজ Verify করলে Fast Payment পাবেন।',false)}),
  adpanel:id=>{const M=id==='monetag';
   openM(`<div class="row" style="margin-bottom:12px"><h3 class="ttl" style="margin:0">${I(M?'spark':'link')} ${M?'Monetag Ads':'Adsterra'}</h3><button class="x" onclick="closeM()">${I('x')}</button></div>`+(M?
-  `<div class="card"><b>Rewarded Ad</b><div class="m">বিজ্ঞাপন পুরো দেখলে +5 coin।</div><button class="btn" onclick="A.ad('monetag')">${I('play')} বিজ্ঞাপন দেখে coin নিন</button></div>`:
-  `<div class="card"><b>Direct Link</b><div class="m">লিংক খুলে ১৫ সেকেন্ড থাকুন, তারপর ফিরে এসে coin নিন (+5)।</div><button class="btn" onclick="A.ad('adsterra')">${I('link')} Adsterra খুলুন</button></div>`)
+  `<div class="card"><b>Rewarded Ad</b><div class="m">${CF().ad_count}টি বিজ্ঞাপন পুরো দেখলে +${CF().ad_reward} coin।</div><button class="btn" onclick="A.ad('monetag')">${I('play')} বিজ্ঞাপন দেখে coin নিন</button></div>`:
+  `<div class="card"><b>Direct Link</b><div class="m">লিংক খুলে ১৫ সেকেন্ড থাকুন, তারপর ফিরে এসে coin নিন (+${CF().adsterra_reward})।</div><button class="btn" onclick="A.ad('adsterra')">${I('link')} Adsterra খুলুন</button></div>`)
   +`<div class="m" style="margin-top:6px">প্রতিটি বিজ্ঞাপনে একবারই reward; দৈনিক সর্বোচ্চ ২০টি।</div>`)},
+ flip:()=>guard(async()=>{if(!betOk())return;const side=S.cfs=='t'?'t':'h',bet=S.bet,r=await rpc('flip',{p_bet:bet,p_side:side}),cur=S.frot||0,ta=r.side=='h'?0:180;
+  S.frot=cur+1080+(((ta-cur)%360)+360)%360;$('#cf').style.transform=`rotateY(${S.frot}deg)`;await wait(1750);await sync();
+  popup(r.win,r.win?'আপনি জিতেছেন!':'আপনি হারলেন',r.win?r.payout-bet:-bet,'ফল: '+(r.side=='h'?'Heads':'Tails'))}),
+ crStart:()=>guard(async()=>{if(!betOk())return;const bet=S.bet,r=await rpc('crash_start',{p_bet:bet});await sync();S.cr={id:r.id,bet,t0:Date.now(),over:false,busy:false,fin:null};crRun()}),
+ crCash:async()=>{const c=S.cr;if(!c||c.over||c.busy)return;c.busy=true;try{const r=await rpc('crash_cash',{p_round:c.id});await crFinish(c,r.ok?r.mult:r.crash,!r.ok,r.ok?r.payout:0,r.crash)}catch(e){c.busy=false}},
  task:k=>guard(async()=>{const c=CF(),ss=await rpc('task_start',{kind:k});
   if(k==='wait2')taskWait(ss.id,ss.secs||c.wait_seconds,'২ মিনিট অপেক্ষা বোনাস','অ্যাপে থাকুন। বের হলে বা অ্যাপ minimize হলে টাইমার আবার শুরু হবে।',true);
   else{tg.openLink(c.site_url);taskWait(ss.id,ss.secs||c.visit_seconds,'Site Visit','সাইটে ২ মিনিট থাকুন, তারপর ফিরে এসে coin নিন।',false)}}),
@@ -319,7 +350,9 @@ function render(){const a=$('#app'),keep=S.keepClear?[]:['wn','wa','wq','ans'].m
  keep.forEach(([i,v])=>{const e=$('#'+i);if(e&&v)e.value=v});
  [...a.children].forEach((e,i)=>e.style.setProperty('--i',Math.min(i,8)));
  $('#nav').innerHTML=NAV.map(([k,i,l])=>`<button class="${S.page==k?'on':''}" onclick="go('${k}')">${I(i)}${l}</button>`).join('');
- const g=S.page==='games'?S.game:null;if(g==='ud'){trInit();drawTrade();trLoop()}else clearInterval(trT);if(g==='sc')initScratch();countUp()}
+ const g=S.page==='games'?S.game:null;if(g==='ud'){trInit();drawTrade();trLoop()}else clearInterval(trT);if(g==='sc')initScratch();
+ if(g==='cr'){const c=S.cr;if(c&&c.fin){crDraw(c.fin.t,c.fin.m,c.fin.crashed);const e=$('#crM');if(e){e.textContent=c.fin.m.toFixed(2)+'x';e.classList.toggle('crash',c.fin.crashed)}}else if(!c||c.over)crDraw(.1,1,false)}
+ countUp()}
 function pgAnim(){const ap=$('#app');ap.classList.add('pg');clearTimeout(pgAnim.t);pgAnim.t=setTimeout(()=>ap.classList.remove('pg'),900)}
 async function go(p){if(S.scPend){S.scPend=0;S.sc=null;sync().then(render)}closeM();pgAnim();S.page=p;if(p!='games')S.game=null;render();scrollTo({top:0});
  if(p=='wallet'||p=='home'){try{await sync();const h=await rpc('history');S.hist=Array.isArray(h)?h:[]}catch(e){}render()}

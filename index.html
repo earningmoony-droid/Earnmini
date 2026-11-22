@@ -133,10 +133,13 @@ async function rpc(f,a={},q){
 async function sync(){const m=await rpc('me');if(m&&m.bal!==undefined)S.me=Object.assign(S.me,m)}
 async function guard(fn){if(S.busy)return;S.busy=true;try{await fn()}catch(e){console.error(e)}finally{S.busy=false;render()}}
 /* ===== বিজ্ঞাপন ===== */
+const withTO=(p,ms=90000)=>Promise.race([p,new Promise((_,j)=>setTimeout(()=>j(new Error('সময় শেষ (timeout)')),ms))]);
 async function runAd(a){
- if(a.id==='monetag'){const fn=ADSET.monetagFn;if(typeof window[fn]!=='function'){toast('Monetag SDK এখনো লোড হয়নি; কিছুক্ষণ পরে চেষ্টা করুন','err');return false}toast('বিজ্ঞাপন লোড হচ্ছে…');await window[fn]();return true}
- if(a.id==='gigapub'){if(typeof window.showGiga!=='function'){toast('GigaPub SDK এখনো লোড হয়নি; কিছুক্ষণ পরে চেষ্টা করুন','err');return false}toast('বিজ্ঞাপন লোড হচ্ছে…');await window.showGiga();return true}
- return false}
+ const fn=a.id==='monetag'?window[ADSET.monetagFn]:a.id==='gigapub'?window.showGiga:null;
+ if(typeof fn!=='function'){S.adErr=a.name+' SDK লোড হয়নি';return false}
+ toast('বিজ্ঞাপন লোড হচ্ছে…');
+ try{await withTO(Promise.resolve(fn.call(window)));return true}
+ catch(e){S.adErr=a.name+': '+((e&&(e.message||e.error||e.reason))||e||'বিজ্ঞাপন নেই');console.warn(S.adErr);return false}}
 async function showAds(order,n){let shown=0;for(const p of order){const a=ADS.find(x=>x.id==p);while(shown<n){if(shown>0)toast('আরও '+(n-shown)+'টি বিজ্ঞাপন…');let ok=false;try{ok=await runAd(a)}catch(e){ok=false}if(!ok)break;shown++}if(shown>=n)break}return shown>=n}
 async function claimAd(sid){const r=await rpc('claim_ad',{p_session:sid});await sync();closeM();popup(true,'বিজ্ঞাপন সম্পন্ন!',r.reward,'coin যোগ হয়েছে',false)}
 function adWait(sid){const t0=Date.now();clearInterval(S.adT);
@@ -293,9 +296,9 @@ const A={
  ci:()=>guard(async()=>{await rpc('daily_checkin');await sync();S.me.checked=true;popup(true,'Check-in সম্পন্ন!',50,'আগামীকাল আবার আসুন')}),
  ad:id=>guard(async()=>{
   if(id==='adsterra'){const ss=await rpc('start_ad',{p_provider:id});closeM();tg.openLink(ADSET.adsterraUrl);return adWait(ss.id)}
-  const order=id==='any'?['monetag','gigapub']:[id],ss=await rpc('start_ad',{p_provider:order[0]});
+  S.adErr='';const order=(id==='any'||id==='monetag')?['monetag','gigapub']:['gigapub','monetag'],ss=await rpc('start_ad',{p_provider:order[0]});
   if(await showAds(order,CF().ad_count))return await claimAd(ss.id);
-  toast('এখন বিজ্ঞাপন পাওয়া যাচ্ছে না, coin যোগ হয়নি। একটু পরে চেষ্টা করুন','err')}),
+  toast('এখন বিজ্ঞাপন পাওয়া যাচ্ছে না'+(S.adErr?' ('+S.adErr+')':'')+', coin যোগ হয়নি। একটু পরে চেষ্টা করুন','err')}),
  claim:sid=>guard(()=>claimAd(sid)),
  ud:d=>guard(async()=>{if(!betOk())return;trInit();const r=await rpc('play_updown',{p_bet:S.bet,p_dir:d}),t=S.tr,e=t.v.at(-1),up=r.dir=='up',sg=up?1:-1;t.e=e;
   for(let i=1;i<=12;i++){const last=t.v.at(-1),goal=e+sg*(1.5+Math.random())*i/12;let nx=last+(goal-last)*.5+(Math.random()-.5)*.5;if(i==12)nx=e+sg*(1.3+Math.random());trTick(nx-last);await wait(230)}

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="dark"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b16">
+<title>EarnMini AI</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+<script src='https://libtl.com/sdk.js' data-zone='9125921' data-sdk='show_9125921'></script>
+<style>
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+:root{--bg:#070b16;--g:#ffffff12;--gb:#ffffff22;--t:#eef1fb;--m:#8f9ac0;--c:#22d3ee;--v:#8b5cf6;--nav:#0d1326d9;--ok:#4ade80;--no:#f87171;--sh:0 12px 32px #0006;--e:cubic-bezier(.2,.8,.2,1)}
+[data-theme=light]{--bg:#eef2fb;--g:#ffffffb3;--gb:#fff;--t:#121830;--m:#58638a;--nav:#ffffffe6;--sh:0 12px 32px #3b4a8a26}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t);font:15px/1.45 system-ui,"Noto Sans Bengali",sans-serif;padding:0 14px calc(108px + env(safe-area-inset-bottom));min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s}
+.orb{position:fixed;border-radius:50%;filter:blur(70px);opacity:.42;z-index:-2;pointer-events:none;animation:flt 16s ease-in-out infinite alternate}
+.o1{width:320px;height:320px;background:var(--v);top:-90px;right:-110px}.o2{width:300px;height:300px;background:var(--c);bottom:-80px;left:-100px;animation-delay:-8s}
+@keyframes flt{to{transform:translate(-40px,50px) scale(1.15)}}
+#bg{position:fixed;inset:0;z-index:-1;pointer-events:none}#fxc{position:fixed;inset:0;z-index:60;pointer-events:none}
+body>header,#app{max-width:520px;margin-inline:auto}
+header{display:flex;justify-content:space-between;align-items:center;padding:calc(12px + env(safe-area-inset-top)) 0 12px;position:sticky;top:0;z-index:5}
+header b{font-size:20px;letter-spacing:-.3px;background:linear-gradient(90deg,var(--c),var(--v));-webkit-background-clip:text;background-clip:text;color:transparent}
+.ic{width:1.25em;height:1.25em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-.25em}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--g);border:1px solid var(--gb);border-radius:99px;padding:7px 14px;font-weight:700;backdrop-filter:blur(16px)}
+.card{background:var(--g);border:1px solid var(--gb);border-radius:30px;padding:18px;margin-bottom:12px;backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);box-shadow:var(--sh),inset 0 1px #ffffff2e;transition:transform .25s var(--e),box-shadow .3s}
+.pg>*{animation:in .55s var(--e) backwards;animation-delay:calc(var(--i,0)*55ms)}
+@keyframes in{from{opacity:0;transform:translateY(20px) scale(.97)}}
+.btn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;padding:14px 18px;border:0;border-radius:99px;background:linear-gradient(135deg,var(--c),var(--v));color:#fff;font-weight:700;font-size:15px;font-family:inherit;box-shadow:0 8px 22px color-mix(in srgb,var(--c) 40%,transparent);transition:transform .2s var(--e),opacity .2s,box-shadow .3s}
+.btn:active,.chip:active,nav button:active{transform:scale(.95)}
+.btn.g{background:var(--g);color:var(--t);border:1px solid var(--gb);box-shadow:none}.btn.s{width:auto;margin:0;padding:10px 18px}.btn:disabled{opacity:.45;box-shadow:none}
+.btn.up{background:linear-gradient(135deg,#22c55e,#15803d)}.btn.dn{background:linear-gradient(135deg,#f43f5e,#b91c1c)}
+.btn.shine:not(:disabled):after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:skewX(-20deg);animation:sh 3.8s ease-in-out infinite}
+@keyframes sh{60%,100%{left:130%}}
+.rp{position:absolute;border-radius:50%;background:#ffffff55;transform:scale(0);animation:rp .6s ease-out forwards;pointer-events:none}@keyframes rp{to{transform:scale(1);opacity:0}}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between}.row>.btn{flex:1}
+.m{color:var(--m);font-size:13px}h1{font-size:40px;letter-spacing:-1px;line-height:1.1}h3{margin-bottom:8px;font-size:17px}.ttl{display:flex;align-items:center;gap:8px}
+input{width:100%;background:var(--g);border:1px solid var(--gb);color:var(--t);border-radius:99px;padding:13px 18px;margin:5px 0;font-size:15px;font-family:inherit;outline:0;transition:border-color .2s,box-shadow .2s}
+input:focus{border-color:var(--c);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 22%,transparent)}
+.chips{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}.chip{position:relative;overflow:hidden;flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 12px;border-radius:99px;border:1px solid var(--gb);background:var(--g);color:var(--t);font-weight:600;font-size:14px;font-family:inherit;transition:transform .2s var(--e),background .2s,border-color .2s}
+.chip.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 22%,transparent);color:var(--c)}
+.sw{flex:none;width:40px;height:40px;padding:0;border:3px solid transparent;background-clip:padding-box}.sw.on{box-shadow:0 0 0 2px var(--t)}
+.it{display:flex;align-items:center;gap:14px;cursor:pointer}.it:active{transform:scale(.98)}.it .gx{flex:1;min-width:0}.ch{color:var(--m)}
+.ib{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;flex:none;color:#fff;font-size:20px;background:linear-gradient(135deg,var(--a,var(--c)),var(--b,var(--v)));box-shadow:0 6px 16px color-mix(in srgb,var(--a,var(--c)) 40%,transparent)}
+.badge{font-size:11px;padding:3px 10px;border-radius:99px;background:var(--g);border:1px solid var(--gb);color:var(--m)}
+.hero{text-align:center;padding:26px 18px}.hero .ic{width:1.1em;height:1.1em}
+.qa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}.qa button{background:0;border:0;color:var(--t);font-weight:600;font-size:12px;font-family:inherit;display:grid;gap:8px;justify-items:center}
+.av{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-size:28px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--c),var(--v));overflow:hidden;margin:0 auto 10px;box-shadow:0 0 0 4px var(--g),0 10px 24px color-mix(in srgb,var(--c) 40%,transparent)}.av img{width:100%;height:100%;object-fit:cover}
+.li{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--gb)}.li:last-child{border:0}.li .ib{width:38px;height:38px;font-size:16px}
+.empty{text-align:center;padding:18px 0;color:var(--m)}.empty .ic{width:34px;height:34px;display:block;margin:0 auto 8px;opacity:.6}
+.okc{color:var(--ok)}.noc{color:var(--no)}
+.chartwrap{padding:12px 4px;background:#00000026;border-radius:26px;margin:12px 0}.chartwrap canvas{width:100%;display:block}
+.sc{position:relative;width:280px;max-width:100%;height:120px;margin:12px auto;border-radius:99px;overflow:hidden;background:linear-gradient(135deg,#22d3ee55,#8b5cf655);display:flex;gap:8px;align-items:center;justify-content:center;font-size:30px;font-weight:800}
+.sc canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.sk{height:110px;background:linear-gradient(100deg,var(--g) 30%,var(--gb) 50%,var(--g) 70%);background-size:300% 100%;animation:skl 1.4s linear infinite}@keyframes skl{to{background-position:-300% 0}}
+nav{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:calc(100% - 20px);max-width:500px;display:flex;gap:2px;padding:6px;background:var(--nav);border:1px solid var(--gb);border-radius:99px;backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px);box-shadow:var(--sh);z-index:6}
+nav button{position:relative;overflow:hidden;flex:1;display:grid;justify-items:center;gap:2px;padding:7px 0;background:0;border:0;border-radius:99px;color:var(--m);font-weight:600;font-size:10.5px;font-family:inherit;transition:background .3s,color .3s,transform .2s var(--e)}
+nav .ic{width:22px;height:22px;transition:transform .35s var(--e)}
+nav .on{color:var(--c);background:color-mix(in srgb,var(--c) 18%,transparent)}nav .on .ic{transform:translateY(-1px) scale(1.15)}
+#toast{position:fixed;top:calc(64px + env(safe-area-inset-top));left:50%;transform:translate(-50%,-14px) scale(.95);background:var(--nav);color:var(--t);border:1px solid var(--gb);backdrop-filter:blur(16px);padding:11px 20px;border-radius:99px;opacity:0;pointer-events:none;z-index:50;max-width:90%;text-align:center;font-weight:600;box-shadow:var(--sh);transition:opacity .25s,transform .35s var(--e)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#modal{position:fixed;inset:0;background:#0009;backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;z-index:30}
+#modal.on{opacity:1;visibility:visible}
+.sheet{width:100%;max-width:520px;max-height:88vh;overflow:auto;background:var(--bg);border:1px solid var(--gb);border-radius:34px 34px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));transform:translateY(60px);transition:transform .4s var(--e)}
+#modal.on .sheet{transform:none}.grab{width:44px;height:5px;border-radius:9px;background:var(--gb);margin:0 auto 14px}
+.x{width:38px;height:38px;border-radius:50%;border:1px solid var(--gb);background:var(--g);color:var(--t);display:grid;place-items:center}
+.sheet .card{box-shadow:none;border-radius:26px}
+body[data-fx=full] .btn:not(.g):not(:disabled){box-shadow:0 8px 0 #0003,0 14px 26px color-mix(in srgb,var(--c) 45%,transparent)}
+body[data-fx=full] .btn:not(.g):active{transform:translateY(4px) scale(.98);box-shadow:0 3px 0 #0003}
+body[data-fx=off] #bg,body[data-fx=off] .orb{display:none}body[data-fx=off] .pg>*{animation:none}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+#res{position:fixed;inset:0;display:grid;place-items:center;background:#0009;backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;z-index:45}#res.on{opacity:1;visibility:visible}
+.rc{width:min(88%,340px);text-align:center;padding:28px 20px 22px;border-radius:38px;background:var(--bg);border:1px solid var(--gb);box-shadow:var(--sh);transform:scale(.7) translateY(30px);transition:transform .5s cubic-bezier(.34,1.56,.64,1)}#res.on .rc{transform:none}
+.rb{width:88px;height:88px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;color:#fff;font-size:38px;position:relative}
+.rb.w{background:linear-gradient(135deg,#22c55e,#15803d)}.rb.l{background:linear-gradient(135deg,#f43f5e,#b91c1c)}
+.rb:after{content:"";position:absolute;inset:-8px;border-radius:50%;border:3px solid;opacity:0;animation:ping 1.6s ease-out infinite}.rb.w:after{border-color:#22c55e}.rb.l:after{border-color:#f43f5e}
+@keyframes ping{from{transform:scale(.8);opacity:.7}to{transform:scale(1.35);opacity:0}}
+.ramt{font-size:34px;font-weight:800;margin:6px 0}.ramt .ic{width:.9em;height:.9em}
+.bar{height:10px;border-radius:99px;background:var(--gb);overflow:hidden;margin:12px 0 6px}.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--c),var(--v));transition:width .8s var(--e)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}.st{margin:0;padding:14px}.st .ib{width:38px;height:38px;font-size:17px;margin-bottom:8px}.st b{font-size:22px;display:block}
+.qbox{font-size:26px;font-weight:800;margin:14px 0;text-align:center;padding:16px;border-radius:28px;background:var(--g);border:1px solid var(--gb)}
+.rate{padding:12px 16px;border-radius:24px;background:color-mix(in srgb,var(--c) 14%,transparent);font-size:13px;margin:10px 0;line-height:1.8}
+.stp{margin:10px 0}.stp .x{width:48px;height:48px;font-size:24px;font-weight:700}
+.wh{position:relative;width:230px;max-width:100%;margin:18px auto}.wh svg{width:100%;display:block;transition:transform 4.5s cubic-bezier(.12,.7,.1,1);filter:drop-shadow(0 10px 22px #0006)}
+.ptr{position:absolute;top:-10px;left:50%;margin-left:-11px;width:0;height:0;border:11px solid transparent;border-top:22px solid #fbbf24;z-index:2;filter:drop-shadow(0 2px 3px #0006)}
+.lakes{display:flex;gap:12px;justify-content:center;margin:20px 0}
+.lake{position:relative;width:92px;height:92px;border-radius:50%;border:2px solid var(--gb);background:radial-gradient(circle at 35% 30%,#7dd3fc,#0ea5e9 60%,#0369a1);color:#fff;display:grid;place-items:center;transition:box-shadow .3s,transform .2s}.lake:active{transform:scale(.93)}.lake .ic{width:38px;height:38px}
+
+.lake.pick{box-shadow:0 0 0 4px var(--c)}.lake.hit{background:radial-gradient(circle at 35% 30%,#86efac,#22c55e 60%,#15803d)}
+.ring{position:relative;width:130px;height:130px;margin:6px auto 14px}.ring svg{width:100%;transform:rotate(-90deg)}.ring circle{fill:none;stroke:var(--gb);stroke-width:8}.ring circle+circle{stroke:var(--c);stroke-linecap:round;stroke-dasharray:276.5;stroke-dashoffset:276.5;transition:stroke-dashoffset .3s linear}.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:36px}
+</style></head><body>
+<div class="orb o1"></div><div class="orb o2"></div><canvas id="bg"></canvas><canvas id="fxc"></canvas>
+<header id="hd"></header><main id="app"></main><nav id="nav"></nav><div id="toast"></div><div id="modal"></div><div id="res"></div>
+<script>
+/* ===== কনফিগ ===== */
+const CFG={SB_URL:'https://uhmyabgvxyqgsgvfwzzw.supabase.co',SB_KEY:'sb_publishable_DwgdEYCjZlehOQxisXPEeQ_aSPR-QNd',REF_BASE:'https://t.me/YOUR_BOT/app',SUPPORT:'https://t.me/+qa_ey--xPZZiMDJl'};
+/* AdMob ওয়েব/Mini App এ চলে না, AdSense এ rewarded নেই, তাই দুটো বন্ধ */
+const ADS=[{id:'monetag',name:'Monetag'},{id:'adsterra',name:'Adsterra'}];
+const ADSET={monetagFn:'show_9125921',adsterraUrl:'https://asiafilm.org/4/86823ef8c0dea39ddd93e75eae521be2'};
+const MIN_WATCH=15000;
+/* ===== আইকন (inline SVG, কোনো CDN লাগে না) ===== */
+const IC={home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',tv:'<rect x="3" y="6" width="18" height="14" rx="4"/><path d="M8 2l4 4 4-4"/>',game:'<rect x="2" y="7" width="20" height="11" rx="5.5"/><path d="M7 10v5M4.5 12.5h5"/><circle cx="15.5" cy="11.5" r="1"/><circle cx="18" cy="14" r="1"/>',gift:'<rect x="3" y="8" width="18" height="4" rx="2"/><path d="M5 12v8h14v-8M12 8v12"/><path d="M12 8C10 8 8 7 8 5.5S10 3 12 8zM12 8c2 0 4-1 4-2.5S14 3 12 8z"/>',wallet:'<path d="M5 7V6a2 2 0 012-2h10v3"/><rect x="3" y="7" width="18" height="13" rx="4"/><circle cx="16.5" cy="13.5" r="1.2"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5M16 4.5a3.5 3.5 0 010 7M18 14.8c2.2.6 3.5 2.3 3.5 5"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="5"/><path d="M8 3v4M16 3v4M3 10h18"/>',check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',right:'<path d="M9 5l7 7-7 7"/>',left:'<path d="M15 5l-7 7 7 7"/>',trend:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',ticket:'<path d="M3 8a2 2 0 012-2h14a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2a2 2 0 000-4z"/><path d="M14 6v12" stroke-dasharray="2 2.5"/>',calc:'<rect x="5" y="3" width="14" height="18" rx="4"/><path d="M8.5 7.5h7M9 12h.01M12 12h.01M15 12h.01M9 16h.01M12 16h.01M15 16h.01"/>',puzzle:'<path d="M10 4a2 2 0 114 0v2h4v4h-2a2 2 0 100 4h2v6H4v-6h2a2 2 0 100-4H4V6h6z"/>',spin:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v7M12 14v7M3 12h7M14 12h7"/>',whale:'<path d="M3 13c3-5 9-6 13-3l5-3-1 5 1 5-5-2c-4 3-10 2-13-2z"/><circle cx="8" cy="11.5" r=".6"/>',up:'<path d="M12 19V5M6 11l6-6 6 6"/>',down:'<path d="M12 5v14M6 13l6 6 6-6"/>',bot:'<rect x="4" y="8" width="16" height="12" rx="5"/><path d="M12 4v4M9 14h.01M15 14h.01"/><circle cx="12" cy="3.2" r="1"/>',chat:'<path d="M21 12a8 8 0 01-11.5 7.2L4 20l1-4.5A8 8 0 1121 12z"/>',file:'<path d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',moon:'<path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="4"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/>',send:'<path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',play:'<path d="M8 5l11 7-11 7z" fill="currentColor"/>',link:'<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',inn:'<path d="M12 5v14M6 13l6 6 6-6"/>',out:'<path d="M12 19V5M6 11l6-6 6 6"/>',wifi:'<path d="M2 9a15 15 0 0120 0M5 12.5a10 10 0 0114 0M8.5 16a5 5 0 017 0M12 19.5h.01"/>',coin:'<circle cx="12" cy="12" r="10" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/><circle cx="12" cy="12" r="6.6" fill="none" stroke="#fde68a" stroke-width="1.5"/><path d="M12 8.6l1 2.2 2.4.3-1.8 1.6.5 2.4-2.1-1.2-2.1 1.2.5-2.4-1.8-1.6 2.4-.3z" fill="#fff7d6" stroke="none"/>'};
+document.body.insertAdjacentHTML('afterbegin','<svg width="0" height="0" style="position:absolute"><defs>'+Object.entries(IC).map(([k,v])=>`<symbol id="i-${k}" viewBox="0 0 24 24">${v}</symbol>`).join('')+'</defs></svg>');
+const I=(n,c='')=>`<svg class="ic ${c}"><use href="#i-${n}"/></svg>`;
+/* ===== কোর ===== */
+const tg=Telegram.WebApp;tg.ready();tg.expand();try{tg.disableVerticalSwipes&&tg.disableVerticalSwipes()}catch(e){}
+const sb=supabase.createClient(CFG.SB_URL,CFG.SB_KEY);
+const $=s=>document.querySelector(s),wait=ms=>new Promise(r=>setTimeout(r,ms));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get:k=>{try{return localStorage[k]}catch(e){}},set:(k,v)=>{try{localStorage[k]=v}catch(e){}}};
+const hap=(t='light')=>{try{tg.HapticFeedback.impactOccurred(t)}catch(e){}},hapN=t=>{try{tg.HapticFeedback.notificationOccurred(t)}catch(e){}};
+let S={page:'home',me:{bal:0,name:'',id:''},bet:50,game:null,hist:[],busy:false,ld:true,wm:'bkash'};
+function toast(t,k){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),2800);if(k=='ok'){burst();hapN('success')}else if(k=='err')hapN('error')}
+function openM(h){const m=$('#modal');m.innerHTML=`<div class="sheet"><div class="grab"></div>${h}</div>`;m.classList.add('on')}
+function closeM(){$('#modal').classList.remove('on')}
+$('#modal').onclick=e=>{if(e.target.id==='modal')closeM()};
+async function rpc(f,a={}){
+ if(!tg.initData){const m='Telegram Mini App এর ভেতর থেকে খুলুন (সাধারণ browser এ চলবে না)';rpc.last=m;toast(m,'err');throw new Error(m)}
+ let data,error;try{({data,error}=await sb.functions.invoke('super-endpoint',{body:{action:f,args:a,initData:tg.initData}}))}catch(e){error=e}
+ if(error){let m=error.message||'সংযোগ ব্যর্থ';const c=error.context;
+  if(c&&typeof c.text==='function'){try{const t=await c.text();let j;try{j=JSON.parse(t)}catch(_){}m='['+c.status+'] '+((j&&(j.error||j.message||j.msg))||t||m)}catch(_){}}
+  else if(/fetch|network/i.test(m))m='সার্ভারে পৌঁছানো যাচ্ছে না: ইন্টারনেট ও function নাম চেক করুন';
+  rpc.last=m;toast(m,'err');throw error}
+ if(data&&data.error){rpc.last=data.error;toast(data.error,'err');throw new Error(data.error)}
+ if(data&&data.bal!==undefined)data.bal=Number(data.bal)||0;return data}
+async function sync(){const m=await rpc('me');S.me=Object.assign(S.me,m)}
+async function guard(fn){if(S.busy)return;S.busy=true;try{await fn()}catch(e){console.error(e)}finally{S.busy=false;render()}}
+/* ===== বিজ্ঞাপন ===== */
+async function runAd(a){
+ if(a.id==='monetag'){const fn=ADSET.monetagFn;if(typeof window[fn]!=='function'){toast('Monetag SDK এখনো লোড হয়নি; কিছুক্ষণ পরে চেষ্টা করুন','err');return false}toast('বিজ্ঞাপন লোড হচ্ছে…');await window[fn]();return true}
+ return false}
+async function claimAd(sid){const r=await rpc('claim_ad',{p_session:sid});await sync();closeM();popup(true,'বিজ্ঞাপন সম্পন্ন!',r.reward,'coin যোগ হয়েছে')}
+function adWait(sid){const t0=Date.now();clearInterval(S.adT);
+ openM(`<div style="text-align:center"><div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/><circle id="rg" cx="50" cy="50" r="44"/></svg><b id="cd">${MIN_WATCH/1000}</b></div><h3>বিজ্ঞাপন পেজে থাকুন</h3><div class="m" style="margin-bottom:6px">কাউন্টডাউন শেষ হলে নিচের বোতাম চালু হবে।</div><button id="clm" class="btn" disabled onclick="A.claim('${sid}')">coin নিন</button><button class="btn g" onclick="clearInterval(S.adT);closeM()">বাতিল</button></div>`);
+ S.adT=setInterval(()=>{const k=Math.min(1,(Date.now()-t0)/MIN_WATCH),r=$('#rg');if(!r)return clearInterval(S.adT);r.style.strokeDashoffset=276.5*(1-k);$('#cd').textContent=Math.ceil((1-k)*MIN_WATCH/1000);if(k>=1){clearInterval(S.adT);$('#cd').innerHTML=I('check');$('#clm').disabled=false}},250)}
+/* ===== পেজ ===== */
+const NAV=[['home','home','হোম'],['ads','tv','Ads'],['games','game','গেম'],['refer','gift','রেফার'],['wallet','wallet','ওয়ালেট'],['me','user','প্রোফাইল']];
+const row=(ic,t,d,o,a,b,tag)=>`<div class="card it" onclick="${o}"><span class="ib" style="--a:${a};--b:${b}">${I(ic)}</span><div class="gx"><b>${t}</b><div class="m">${d}</div></div>${tag?`<span class="badge">${tag}</span>`:I('right','ch')}</div>`;
+const errCard=()=>{const e=S.err,h=/401/.test(e)?'Supabase → Edge Functions → super-endpoint → Settings থেকে "Verify JWT" বন্ধ করে Save করুন।':/404/.test(e)?'Function এর নাম super-endpoint আছে কি না দেখুন।':/500|42883|PGRST/.test(e)?'Function এর Logs দেখুন; setup.sql ও update.sql চালানো হয়েছে কি না নিশ্চিত করুন।':'';return `<div class="card empty" style="margin-top:20px">${I('wifi')}<b style="color:var(--t)">সংযোগ ব্যর্থ</b><div class="m" style="margin:8px 0;word-break:break-word">${esc(e)}</div>${h?`<div class="m" style="color:var(--c)">${esc(h)}</div>`:''}<button class="btn" onclick="location.reload()">আবার চেষ্টা করুন</button></div>`};
+const skel=()=>'<div class="card sk" style="height:130px"></div><div class="card sk"></div><div class="card sk" style="height:90px"></div>';
+const P={},PK=5000,BN='০১২৩৪৫৬৭৮৯';
+const num=v=>+String(v||'').replace(/[০-৯]/g,c=>BN.indexOf(c)).replace(/[^\d.-]/g,'')||0;
+const eq=c=>(c*15/PK).toFixed(2);
+const hl=l=>l.length?l.map(h=>`<div class="li"><span class="ib" style="--a:${h.amount<0?'#f43f5e':'#22c55e'};--b:${h.amount<0?'#b91c1c':'#15803d'}">${I(h.amount<0?'out':'inn')}</span><div style="flex:1;min-width:0"><b>${esc(h.kind)}</b><div class="m">${new Date(h.created_at).toLocaleString('bn-BD')}${h.status?' • '+esc(h.status):''}</div></div><b class="${h.amount<0?'noc':'okc'}">${h.amount>0?'+':''}${h.amount}</b></div>`).join(''):`<div class="empty">${I('wallet')}এখনো কোনো লেনদেন নেই।</div>`;
+P.home=()=>{const m=S.me,b=Number(m.bal)||0;return `<div class="card hero"><div class="m">মোট ব্যালেন্স</div><h1>${I('coin')} <span class="bal">${b}</span></h1><div class="m">≈ ৳${eq(b)} • ${Math.floor(b*25/PK)} Diamond</div><div class="bar"><i style="width:${Math.min(100,b*100/PK)}%"></i></div><div class="m">${b>=PK?'Withdraw করার জন্য প্রস্তুত':'Withdraw-এর জন্য আর '+(PK-b)+' coin লাগবে'}</div></div>
+<div class="stats">${[['trend','আজকের আয়',m.today_earned||0],['coin','মোট আয়',m.total_earned||0],['tv','আজকের Ads',(m.ads_today||0)+'/20'],['users','রেফারেল',m.refs||0]].map(([i,l,v])=>`<div class="card st"><span class="ib">${I(i)}</span><b>${v}</b><div class="m">${l}</div></div>`).join('')}</div>
+<div class="card"><div class="row"><b class="ttl">${I('cal')} Daily Check-in</b><span class="pill">+50 coin</span></div><button class="btn shine" ${m.checked?'disabled':''} onclick="A.ci()">${m.checked?I('check')+' আজকের check-in সম্পন্ন':'Check-in করুন'}</button></div>
+<div class="card"><div class="qa">${[['tv','Ads','ads','#8b5cf6','#6366f1'],['game','গেম','games','#22d3ee','#3b82f6'],['gift','রেফার','refer','#f472b6','#ec4899'],['wallet','ওয়ালেট','wallet','#4ade80','#16a34a']].map(([i,l,p,a,b])=>`<button onclick="go('${p}')"><span class="ib" style="--a:${a};--b:${b}">${I(i)}</span>${l}</button>`).join('')}</div></div>
+<div class="card"><h3>সাম্প্রতিক কার্যক্রম</h3>${hl(S.hist.slice(0,5))}</div>`};
+P.ads=()=>{const n=S.me.ads_today||0;return `<h3 class="ttl">${I('tv')} Ads Center</h3><div class="card"><div class="row"><b>আজকের বিজ্ঞাপন</b><span class="pill">${n}/20</span></div><div class="bar"><i style="width:${Math.min(100,n*5)}%"></i></div><div class="m">প্রতিটি বিজ্ঞাপনে +5 coin • দৈনিক সর্বোচ্চ ২০টি</div></div>
+${row('spark','Monetag','Rewarded Ad • সরাসরি coin',"A.adpanel('monetag')",'#8b5cf6','#6366f1')}
+${row('link','Adsterra','Direct Link • ১৫ সেকেন্ড',"A.adpanel('adsterra')",'#22c55e','#15803d')}`};
+const GM=[['trend','AI Trading Up/Down','দাম বাড়বে না কমবে অনুমান করুন',"S.game='ud';render()",'#22d3ee','#3b82f6'],['ticket','Scratch Card','১০ coin, প্রাইজ জিতুন',"S.game='sc';S.sc=null;render()",'#f472b6','#ec4899'],['calc','AI Math','সঠিক উত্তর দিলে +3 coin',"A.mq('math')",'#fbbf24','#f97316'],['puzzle','Puzzle Challenge','সংখ্যার ধাঁধা মেলান, +5 coin',"A.mq('puzzle')",'#8b5cf6','#6366f1'],['spin','Spin Wheel','প্রতিদিন ১টি free spin',"S.game='sp';render()",'#4ade80','#16a34a'],['whale','Lake Whale','তিমি খুঁজুন, জিতলে 56 coin',"S.game='wh';S.wh=null;render()",'#38bdf8','#0ea5e9']];
+const WP=[2,5,3,10,2,8,5,20];
+function wheel(){const n=8,cols=['#22d3ee','#8b5cf6','#f472b6','#4ade80','#fbbf24','#38bdf8','#fb7185','#a78bfa'],P2=(a,r)=>[(110+r*Math.cos(a)).toFixed(1),(110+r*Math.sin(a)).toFixed(1)];let s='';
+ for(let i=0;i<n;i++){const a0=i*2*Math.PI/n-Math.PI/2,a1=(i+1)*2*Math.PI/n-Math.PI/2,am=(a0+a1)/2,t=P2(am,66);
+  s+=`<path d="M110 110L${P2(a0,100).join(',')}A100 100 0 0 1 ${P2(a1,100).join(',')}Z" fill="${cols[i]}" stroke="#ffffff55" stroke-width="2"/><text x="${t[0]}" y="${t[1]}" transform="rotate(${(am*180/Math.PI+90).toFixed(1)} ${t[0]} ${t[1]})" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-weight="800" font-size="18">${WP[i]}</text>`}
+ return `<div class="wh"><i class="ptr"></i><svg id="wheel" viewBox="0 0 220 220" style="transform:rotate(${S.wrot||0}deg)">${s}<circle cx="110" cy="110" r="16" fill="#0b1020"/></svg></div>`}
+P.games=()=>{const g=S.game;
+ if(!g)return `<h3 class="ttl">${I('game')} Games</h3>`+GM.map(([i,t,d,o,a,b])=>row(i,t,d,o,a,b)).join('');
+ const back=`<button class="btn g s" onclick="A.back()">${I('left')} ফিরে যান</button>`,W=h=>`${back}<div class="card" style="margin-top:12px">${h}</div>`;
+ if(g=='ud')return W(`<h3 class="ttl">${I('trend')} AI Trading Simulator</h3><div class="m">coin-ভিত্তিক simulated game; real market নয়। দাম বাড়বে না কমবে অনুমান করুন, জিতলে ১.৯ গুণ।</div><div class="chartwrap"><canvas id="tradeChart" height="180"></canvas><div class="row m" style="padding:0 14px"><span>Demo Price</span><b id="tradePrice">--</b></div></div><div class="m">আপনার coin wager</div>
+ <div class="chips">${[50,100,200].map(b=>`<button class="chip ${S.bet==b?'on':''}" onclick="S.bet=${b};render()">${b} ${I('coin')}</button>`).join('')}</div>
+ <div class="row"><button class="btn up" onclick="A.ud('up')">${I('up')} UP</button><button class="btn dn" onclick="A.ud('down')">${I('down')} DOWN</button></div>`);
+ if(g=='sc')return W(`<h3 class="ttl">${I('ticket')} Scratch Card</h3>${S.sc==null?`<div class="empty">${I('ticket')}কার্ড কিনে স্ক্র্যাচ করুন</div>`:`<div class="sc">${esc(S.sc)} ${I('coin')}<canvas id="scv" width="280" height="120"></canvas></div>`}<button class="btn" ${S.scPend?'disabled':''} onclick="A.scr()">${S.sc==null?'কার্ড কিনুন (১০ coin)':'আরেকটি কার্ড (১০ coin)'}</button>`);
+ if(g=='mq'||g=='pz'){const q=S.mq.q;return W(`<h3 class="ttl">${I(g=='pz'?'puzzle':'calc')} ${g=='pz'?'Puzzle Challenge':'AI Math'}</h3><div class="m">সঠিক উত্তরে ${g=='pz'?5:3} coin পাবেন। বাংলা বা ইংরেজি সংখ্যা লিখতে পারেন।</div><div class="qbox">${esc(q)}${/\?$/.test(q)?'':' = ?'}</div><input id="ans" type="text" inputmode="numeric" placeholder="উত্তর লিখুন" onkeydown="event.key=='Enter'&&A.ma()"><button class="btn" onclick="A.ma()">উত্তর দিন</button>`)}
+ if(g=='sp'){const ok=S.me.spin_left!==0;return W(`<h3 class="ttl">${I('spin')} Spin Wheel</h3><div class="m">প্রতিদিন ১টি free spin। 2 থেকে 20 coin পর্যন্ত প্রাইজ!</div>${wheel()}<button class="btn" ${ok?'':'disabled'} onclick="A.spin()">${ok?'Spin করুন':'আজকের free spin শেষ'}</button>`)}
+ if(g=='wh')return W(`<h3 class="ttl">${I('whale')} Lake Whale</h3><div class="m">৩টি লেকের একটিতে তিমি লুকিয়ে আছে। খুঁজে পেলে 56 coin (এন্ট্রি 20 coin)।</div><div class="lakes">${[0,1,2].map(i=>`<button class="lake ${S.wh&&S.wh.whale==i?'hit':''} ${S.wh&&S.wh.pick==i?'pick':''}" onclick="A.wh(${i})">${S.wh&&S.wh.whale==i?I('whale'):I('spark')}</button>`).join('')}</div><div class="m" style="text-align:center">একটি লেক বেছে নিন</div>`)};
+const WM=[['bkash','bKash','wallet'],['nagad','Nagad','wallet'],['ff','Free Fire Diamond','game']];
+P.wallet=()=>{const ff=S.wm=='ff',q=S.wq||1,amt=q*PK,b=Number(S.me.bal)||0,m=S.me;return `<div class="card"><h3 class="ttl">${I('wallet')} Withdraw</h3><div class="m">ব্যালেন্স: ${I('coin')} <span class="bal">${b}</span>${m.pending?' • অপেক্ষমাণ: '+m.pending:''}</div>
+<div class="rate">সর্বনিম্ন <b>${PK} coin</b><br>${PK} coin = <b>৳15</b> (bKash / Nagad)<br>${PK} coin = <b>25 Diamond</b> (Free Fire)</div>
+<div class="chips">${WM.map(([k,l,i])=>`<button class="chip ${S.wm==k?'on':''}" onclick="S.wm='${k}';render()">${I(i)} ${l}</button>`).join('')}</div>
+<input id="wn" inputmode="numeric" placeholder="${ff?'Free Fire UID':'bKash / Nagad নম্বর (01XXXXXXXXX)'}">
+<div class="row stp"><button class="x" onclick="S.wq=Math.max(1,(S.wq||1)-1);render()">−</button><div style="text-align:center"><b>${q} প্যাক</b><div class="m">${amt} coin → ${ff?q*25+' Diamond':'৳'+q*15}</div></div><button class="x" onclick="S.wq=Math.min(20,(S.wq||1)+1);render()">+</button></div>
+<button class="btn" ${b<amt?'disabled':''} onclick="A.wd()">${b<amt?'আর '+(amt-b)+' coin লাগবে':'Withdraw করুন'}</button></div>
+<div class="card"><h3>History</h3>${hl(S.hist)}</div>`};
+P.me=()=>{const u=tg.initDataUnsafe?.user||{},n=S.me.name||u.first_name||'ইউজার';
+ return `<div class="card" style="text-align:center"><div class="av">${u.photo_url?`<img src="${esc(u.photo_url)}" alt="">`:esc([...n][0]||'U')}</div><b style="font-size:19px">${esc(n)}</b><div class="m" style="margin-top:4px"><span class="pill" style="padding:3px 12px">ID: ${esc(S.me.id)}</span></div></div>
+${row('bot','Problem AI','যেকোনো সমস্যা লিখুন, AI সমাধান দেবে','A.help()','#22d3ee','#8b5cf6')}
+${row('chat','Support','সরাসরি সাপোর্টে কথা বলুন','tg.openTelegramLink(CFG.SUPPORT)','#38bdf8','#0ea5e9')}
+${row('file','Terms &amp; Conditions','ব্যবহারের নিয়ম','A.terms()','#94a3b8','#64748b')}
+<div class="card"><h3 class="ttl">${I('spark')} UX Mode</h3><div class="m">অ্যানিমেশন</div><div class="chips">${[['off','বন্ধ'],['low','হালকা'],['full','Full 3D']].map(([m,l])=>`<button class="chip ${FX.mode==m?'on':''}" onclick="A.fx('${m}')">${l}</button>`).join('')}</div>
+<div class="m">রঙ</div><div class="chips">${['#22d3ee','#8b5cf6','#f472b6','#4ade80','#fbbf24'].map(c=>`<button class="chip sw ${FX.col==c?'on':''}" style="background:${c}" onclick="A.col('${c}')"></button>`).join('')}</div>
+<div class="m">থিম</div><div class="chips">${[['dark','moon','Dark'],['light','sun','Light']].map(([k,i,l])=>`<button class="chip ${document.documentElement.dataset.theme==k?'on':''}" onclick="A.theme('${k}')">${I(i)} ${l}</button>`).join('')}</div></div>`};
+const rl=()=>CFG.REF_BASE+'?startapp=r'+S.me.id;
+P.refer=()=>`<div class="card"><h3 class="ttl">${I('gift')} Refer &amp; Earn</h3><div class="m">বন্ধু আপনার লিংক দিয়ে যোগ দিলে আপনি পাবেন +100 coin।</div>
+<div class="pill" style="display:block;border-radius:22px;word-break:break-all;margin-top:12px;font-weight:500;font-size:13px">${esc(rl())}</div>
+<button class="btn" onclick="A.cp()">${I('copy')} লিংক কপি করুন</button><button class="btn g" onclick="A.sh()">${I('send')} Telegram এ শেয়ার করুন</button></div>
+<div class="card it" style="cursor:default"><span class="ib">${I('users')}</span><div class="gx"><b>${S.me.refs||0} জন</b><div class="m">মোট রেফারেল</div></div><b>${I('coin')} ${S.me.ref_earned||0}</b></div>`;
+/* ===== ইফেক্ট ===== */
+const FX={mode:LS.get('fx')||(matchMedia('(prefers-reduced-motion:reduce)').matches?'off':'full'),col:LS.get('col')||'#22d3ee'};
+const bg=$('#bg'),bx=bg.getContext('2d'),fc=$('#fxc'),fx=fc.getContext('2d');let coins=[],pts=[],fd=0,tx=0,ty=0;
+function applyFx(){document.body.dataset.fx=FX.mode;document.documentElement.style.setProperty('--c',FX.col);LS.set('fx',FX.mode);LS.set('col',FX.col)}
+function setTheme(m){document.documentElement.dataset.theme=m;LS.set('th',m);try{tg.setHeaderColor(m=='dark'?'#070b16':'#eef2fb');tg.setBackgroundColor(m=='dark'?'#070b16':'#eef2fb')}catch(e){}}
+function initCoins(){bg.width=fc.width=innerWidth;bg.height=fc.height=innerHeight;coins=Array.from({length:{off:0,low:6,full:16}[FX.mode]},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,r:8+Math.random()*14,z:.3+Math.random()*.7,a:Math.random()*6,s:.01+Math.random()*.03}))}
+function burst(x=innerWidth/2,y=innerHeight*.32){if(FX.mode=='off')return;const cl=['#fbbf24','#22d3ee','#8b5cf6','#f472b6','#4ade80'];for(let i=0;i<36;i++){const a=Math.random()*6.283,s=3+Math.random()*7;pts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-4,r:3+Math.random()*5,l:1,c:cl[i%5]})}}
+function loop(){if(!document.hidden){bx.clearRect(0,0,bg.width,bg.height);
+ for(const c of coins){c.a+=c.s;c.y-=.25*c.z;if(c.y<-30)c.y=bg.height+30;
+  const x=c.x+tx*c.z*30,y=c.y+ty*c.z*30,w=Math.max(Math.abs(Math.cos(c.a))*c.r,1.5);
+  bx.globalAlpha=.22+.35*c.z;bx.beginPath();bx.ellipse(x,y,w,c.r,0,0,7);bx.fillStyle='#fbbf24';bx.fill();bx.lineWidth=2;bx.strokeStyle='#d97706';bx.stroke();
+  bx.beginPath();bx.ellipse(x,y,w*.6,c.r*.6,0,0,7);bx.strokeStyle='#fde68a';bx.lineWidth=1.4;bx.stroke()}
+ if(pts.length||fd){fx.clearRect(0,0,fc.width,fc.height);fd=pts.length;
+  pts=pts.filter(p=>p.l>0);for(const p of pts){p.x+=p.vx;p.y+=p.vy;p.vy+=.32;p.vx*=.985;p.l-=.016;fx.globalAlpha=Math.max(p.l,0);fx.fillStyle=p.c;fx.beginPath();fx.arc(p.x,p.y,p.r*Math.max(p.l,.3),0,7);fx.fill()}}}
+ requestAnimationFrame(loop)}
+addEventListener('resize',initCoins);
+addEventListener('deviceorientation',e=>{if(e.gamma!=null){tx=Math.max(-1,Math.min(1,e.gamma/30));ty=Math.max(-1,Math.min(1,(e.beta-45)/30))}});
+const HOVER=matchMedia('(hover:hover)').matches;
+document.addEventListener('pointermove',e=>{if(!HOVER)return;tx=e.clientX/innerWidth*2-1;ty=e.clientY/innerHeight*2-1;
+ const c=e.target.closest&&e.target.closest('.card');
+ if(FX.mode=='full'&&c&&!e.target.closest('.sc,.chartwrap,.sheet')){const b=c.getBoundingClientRect();c.style.transform=`perspective(700px) rotateX(${-((e.clientY-b.top)/b.height-.5)*8}deg) rotateY(${((e.clientX-b.left)/b.width-.5)*8}deg) translateY(-2px)`}});
+document.addEventListener('pointerout',e=>{const c=e.target.closest&&e.target.closest('.card');if(c&&!c.contains(e.relatedTarget))c.style.transform=''});
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('.btn,.chip,nav button');if(!b)return;hap();const r=b.getBoundingClientRect(),d=Math.max(r.width,r.height)*2,s=document.createElement('i');s.className='rp';s.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;b.appendChild(s);setTimeout(()=>s.remove(),600)});
+function countUp(){const to=Number(S.me.bal)||0,from=Number(S.shown??to)||0;S.shown=to;if(from===to||FX.mode=='off')return;const t0=performance.now(),els=document.querySelectorAll('.bal');
+ (function f(t){const k=Math.min(1,(t-t0)/700),v=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));els.forEach(x=>x.textContent=v);if(k<1)requestAnimationFrame(f)})(t0)}
+function popup(ok,title,amt,sub=''){const r=$('#res');r.innerHTML=`<div class="rc"><div class="rb ${ok?'w':'l'}">${I(ok?'check':'x')}</div><h3>${title}</h3>${amt!=null?`<div class="ramt ${ok?'okc':'noc'}">${amt>0?'+':''}${amt} ${I('coin')}</div>`:''}<div class="m" style="margin-bottom:6px">${sub}</div><button class="btn" onclick="$('#res').classList.remove('on')">ঠিক আছে</button></div>`;r.classList.add('on');if(ok){burst();hapN('success')}else hapN('error')}
+$('#res').onclick=e=>{if(e.target.id==='res')e.target.classList.remove('on')};
+let trT;
+function trInit(){if(S.tr)return;let p=100;const v=[p];for(let i=0;i<44;i++){p+=(Math.random()-.5)*1.6;v.push(p)}S.tr={v,e:null}}
+function trTick(d){const t=S.tr,l=t.v.at(-1);t.v.push(l+(d===undefined?(Math.random()-.5)*1.6:d));if(t.v.length>60)t.v.shift();drawTrade()}
+function trLoop(){clearInterval(trT);trT=setInterval(()=>{if(S.page==='games'&&S.game==='ud'&&!S.busy)trTick()},900)}
+function drawTrade(){const c=$('#tradeChart'),t=S.tr;if(!c||!t)return;const w=c.clientWidth||300,h=180,dpr=devicePixelRatio||1;if(c.width!==Math.round(w*dpr)){c.width=Math.round(w*dpr);c.height=Math.round(h*dpr)}
+ const x=c.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);const v=t.v,e=t.e,min=Math.min(...v,e??1e9)-1,max=Math.max(...v,e??-1e9)+1,last=v.at(-1),col=last>=v[0]?'#34d399':'#fb7185';
+ x.clearRect(0,0,w,h);x.strokeStyle='#ffffff1f';x.lineWidth=1;for(let j=1;j<4;j++){x.beginPath();x.moveTo(0,h*j/4);x.lineTo(w,h*j/4);x.stroke()}
+ const X=i=>i*(w-16)/(v.length-1),Y=p=>h-10-((p-min)/(max-min))*(h-20);
+ if(e!=null){x.setLineDash([6,5]);x.strokeStyle='#fbbf24';x.beginPath();x.moveTo(0,Y(e));x.lineTo(w,Y(e));x.stroke();x.setLineDash([]);x.fillStyle='#fbbf24';x.font='600 11px system-ui,sans-serif';x.fillText('Entry '+e.toFixed(2),6,Y(e)-5)}
+ x.beginPath();v.forEach((p,i)=>i?x.lineTo(X(i),Y(p)):x.moveTo(X(i),Y(p)));x.strokeStyle=col;x.lineWidth=3;x.lineCap=x.lineJoin='round';x.stroke();
+ x.lineTo(X(v.length-1),h);x.lineTo(0,h);const gr=x.createLinearGradient(0,0,0,h);gr.addColorStop(0,col+'55');gr.addColorStop(1,col+'00');x.fillStyle=gr;x.fill();
+ x.beginPath();x.arc(X(v.length-1),Y(last),9,0,7);x.fillStyle=col+'33';x.fill();x.beginPath();x.arc(X(v.length-1),Y(last),4.5,0,7);x.fillStyle=col;x.fill();
+ const pr=$('#tradePrice');if(pr){pr.textContent=last.toFixed(2);pr.style.color=col}}
+function initScratch(){const c=$('#scv');if(!c||S.sc==null||S.scDone)return;const x=c.getContext('2d'),g=x.createLinearGradient(0,0,280,120);g.addColorStop(0,'#a5b4fc');g.addColorStop(1,'#6366f1');x.fillStyle=g;x.fillRect(0,0,280,120);x.fillStyle='#ffffffdd';x.font='700 16px system-ui,sans-serif';x.textAlign='center';x.fillText('এখানে স্ক্র্যাচ করুন',140,66);x.globalCompositeOperation='destination-out';
+ let n=0;const chk=()=>{if(S.scDone)return;const d=x.getImageData(0,0,280,120).data;let z=0;for(let i=3;i<d.length;i+=16)if(!d[i])z++;if(z/(d.length/16)>.45){S.scDone=1;c.style.transition='opacity .4s';c.style.opacity=0;c.style.pointerEvents='none';revealSc()}};
+ const m=e=>{if(e.type=='pointermove'&&e.pointerType=='mouse'&&!e.buttons)return;const b=c.getBoundingClientRect();x.beginPath();x.arc((e.clientX-b.left)*280/b.width,(e.clientY-b.top)*120/b.height,20,0,7);x.fill();if(++n%5==0)chk()};
+ c.onpointerdown=c.onpointermove=m;c.onpointerup=chk}
+async function revealSc(){const p=S.sc;S.scPend=0;try{await sync()}catch(e){}render();popup(p>0,p>0?'অভিনন্দন!':'এবার হয়নি',p>0?p:null,p>0?'coin জিতেছেন':'আরেকটি কার্ড চেষ্টা করুন')}
+/* ===== অ্যাকশন ===== */
+const A={
+ ci:()=>guard(async()=>{await rpc('daily_checkin');await sync();S.me.checked=true;popup(true,'Check-in সম্পন্ন!',50,'আগামীকাল আবার আসুন')}),
+ ad:id=>guard(async()=>{const a=ADS.find(x=>x.id==id),ss=await rpc('start_ad',{p_provider:id});
+  if(id==='adsterra'){closeM();tg.openLink(ADSET.adsterraUrl);return adWait(ss.id)}
+  let ok=false;try{ok=await runAd(a)}catch(e){ok=false}
+  if(!ok)return toast('বিজ্ঞাপন দেখানো হয়নি, coin যোগ হয়নি','err');
+  await claimAd(ss.id)}),
+ claim:sid=>guard(()=>claimAd(sid)),
+ ud:d=>guard(async()=>{trInit();const r=await rpc('play_updown',{p_bet:S.bet,p_dir:d}),t=S.tr,e=t.v.at(-1),up=r.dir=='up',sg=up?1:-1;t.e=e;
+  for(let i=1;i<=12;i++){const last=t.v.at(-1),goal=e+sg*(1.5+Math.random())*i/12;let nx=last+(goal-last)*.5+(Math.random()-.5)*.5;if(i==12)nx=e+sg*(1.3+Math.random());trTick(nx-last);await wait(230)}
+  await sync();t.e=null;const n=r.win?r.payout-S.bet:-S.bet;
+  popup(r.win,r.win?'আপনি জিতেছেন!':'আপনি হেরেছেন',n,'দাম '+(up?'বেড়েছে '+I('up'):'কমেছে '+I('down')))}),
+ scr:()=>guard(async()=>{if(S.scPend)return toast('আগে কার্ডটি স্ক্র্যাচ করুন');const r=await rpc('scratch_card');S.sc=r.prize;S.scDone=0;S.scPend=1}),
+ mq:k=>guard(async()=>{S.mq=await rpc('math_new',{kind:k});S.game=k=='puzzle'?'pz':'mq'}),
+ ma:()=>guard(async()=>{if(!$('#ans').value.trim())return toast('উত্তর লিখুন','err');const k=S.game=='pz'?'puzzle':'math',r=await rpc('math_answer',{p_id:S.mq.id,p_ans:num($('#ans').value),kind:k});
+  if(r.ok){await sync();popup(true,'সঠিক উত্তর!',r.reward,'coin ব্যালেন্সে যোগ হয়েছে')}else popup(false,'ভুল উত্তর',null,'সঠিক উত্তর: <b>'+esc(r.ans)+'</b>');
+  S.mq=await rpc('math_new',{kind:k});S.keepClear=1}),
+ spin:()=>guard(async()=>{const r=await rpc('spin'),ix=[...WP.keys()].filter(i=>WP[i]==r.prize),i=ix[Math.random()*ix.length|0],cur=S.wrot||0,ta=-(i+.5)*45+(Math.random()*20-10);
+  S.wrot=cur+2160+(((ta-cur)%360)+360)%360;$('#wheel').style.transform=`rotate(${S.wrot}deg)`;await wait(4700);await sync();popup(true,'Spin সম্পন্ন!',r.prize,'আজকের free spin ব্যবহার হয়েছে')}),
+ wh:i=>guard(async()=>{S.wh=null;const r=await rpc('whale',{p_pick:i});S.wh={pick:i,whale:r.whale};render();await wait(700);await sync();popup(r.win,r.win?'তিমি পেয়েছেন!':'তিমি পাননি',r.win?36:-20,'তিমি ছিল লেক '+(r.whale+1)+'-এ')}),
+ back:()=>{if(S.scPend){S.scPend=0;sync().then(render)}S.game=null;S.sc=null;S.wh=null;render()},
+ wd:()=>guard(async()=>{const m=S.wm,q=S.wq||1,n=String($('#wn').value).trim().replace(/[০-৯]/g,c=>BN.indexOf(c));
+  if(m=='ff'?!/^\d{6,14}$/.test(n):!/^01\d{9}$/.test(n))return toast(m=='ff'?'সঠিক Free Fire UID দিন':'সঠিক ১১ সংখ্যার নম্বর দিন (01XXXXXXXXX)','err');
+  await rpc('withdraw',{p_method:m,p_account:n,p_amount:q*PK,p_qty:q});await sync();$('#wn').value='';S.hist=await rpc('history');
+  popup(true,'অনুরোধ জমা হয়েছে',null,'যাচাইয়ের পর পেমেন্ট করা হবে')}),
+ adpanel:id=>{const M=id==='monetag';
+  openM(`<div class="row" style="margin-bottom:12px"><h3 class="ttl" style="margin:0">${I(M?'spark':'link')} ${M?'Monetag Ads':'Adsterra'}</h3><button class="x" onclick="closeM()">${I('x')}</button></div>`+(M?
+  `<div class="card"><b>Rewarded Ad</b><div class="m">বিজ্ঞাপন পুরো দেখলে +5 coin।</div><button class="btn" onclick="A.ad('monetag')">${I('play')} বিজ্ঞাপন দেখে coin নিন</button></div>`:
+  `<div class="card"><b>Direct Link</b><div class="m">লিংক খুলে ১৫ সেকেন্ড থাকুন, তারপর ফিরে এসে coin নিন (+5)।</div><button class="btn" onclick="A.ad('adsterra')">${I('link')} Adsterra খুলুন</button></div>`)
+  +`<div class="m" style="margin-top:6px">প্রতিটি বিজ্ঞাপনে একবারই reward; দৈনিক সর্বোচ্চ ২০টি।</div>`)},
+ help:()=>openM(`<div class="row" style="margin-bottom:12px"><h3 class="ttl" style="margin:0">${I('bot')} Problem AI</h3><button class="x" onclick="closeM()">${I('x')}</button></div><input id="q" placeholder="আপনার সমস্যা লিখুন" onkeydown="event.key=='Enter'&&A.ask()"><button class="btn" onclick="A.ask()">জিজ্ঞাসা করুন</button><div id="aa" class="m" style="margin-top:12px;white-space:pre-wrap"></div>`),
+ ask:async()=>{const q=$('#q').value.trim();if(!q)return;$('#aa').textContent='ভাবছি…';
+  try{const{data,error}=await sb.functions.invoke('ai-help',{body:{q,init:tg.initData}});if(error)throw error;$('#aa').textContent=data.answer}catch(e){$('#aa').textContent='এখন উত্তর দিতে পারছি না। Support এ যোগাযোগ করুন।'}},
+ terms:()=>openM(`<div class="row" style="margin-bottom:12px"><h3 class="ttl" style="margin:0">${I('file')} Terms &amp; Conditions</h3><button class="x" onclick="closeM()">${I('x')}</button></div><div class="m" style="line-height:1.8">১. বিজ্ঞাপন সম্পূর্ণ না দেখলে coin যোগ হবে না।<br>২. একাধিক অ্যাকাউন্ট, bot বা প্রতারণা করলে অ্যাকাউন্ট বন্ধ ও ব্যালেন্স বাতিল হতে পারে।<br>৩. গেমে coin হারানোর ঝুঁকি আছে; জেতার সম্ভাবনা নিশ্চিত নয়।<br>৪. Withdraw অনুরোধ যাচাইয়ের পর প্রসেস হয়; ভুল নম্বরের দায় ব্যবহারকারীর।<br>৫. নিয়ম যেকোনো সময় পরিবর্তন হতে পারে।</div><button class="btn" onclick="closeM()">বুঝেছি</button>`),
+ theme:m=>{setTheme(m);render()},
+ fx:m=>{FX.mode=m;applyFx();initCoins();render()},
+ col:c=>{FX.col=c;applyFx();render()},
+ cp:async()=>{try{await navigator.clipboard.writeText(rl());toast('লিংক কপি হয়েছে','ok')}catch(e){toast(rl())}},
+ sh:()=>tg.openTelegramLink('https://t.me/share/url?url='+encodeURIComponent(rl())+'&text='+encodeURIComponent('EarnMini AI তে coin আয় করুন!'))};
+/* ===== রেন্ডার ===== */
+function render(){const a=$('#app'),keep=S.keepClear?[]:['wn','wa','wq','ans'].map(i=>[i,$('#'+i)?.value]);S.keepClear=0;
+ $('#hd').innerHTML=`<b>EarnMini AI</b><span class="pill">${I('coin')}<span class="bal">${S.me.bal}</span></span>`;
+ a.innerHTML=S.ld?skel():S.err?errCard():P[S.page]();
+ keep.forEach(([i,v])=>{const e=$('#'+i);if(e&&v)e.value=v});
+ [...a.children].forEach((e,i)=>e.style.setProperty('--i',Math.min(i,8)));
+ $('#nav').innerHTML=NAV.map(([k,i,l])=>`<button class="${S.page==k?'on':''}" onclick="go('${k}')">${I(i)}${l}</button>`).join('');
+ const g=S.page==='games'?S.game:null;if(g==='ud'){trInit();drawTrade();trLoop()}else clearInterval(trT);if(g==='sc')initScratch();countUp()}
+function pgAnim(){const ap=$('#app');ap.classList.add('pg');clearTimeout(pgAnim.t);pgAnim.t=setTimeout(()=>ap.classList.remove('pg'),900)}
+async function go(p){if(S.scPend){S.scPend=0;S.sc=null;sync().then(render)}closeM();pgAnim();S.page=p;if(p!='games')S.game=null;render();scrollTo({top:0});if(p=='wallet'||p=='home'){try{if(p=='home'||p=='wallet')await sync();S.hist=await rpc('history');render()}catch(e){}}}
+setTheme(LS.get('th')||tg.colorScheme||'dark');applyFx();initCoins();loop();pgAnim();
+(async()=>{render();try{S.me=await rpc('me');S.hist=await rpc('history').catch(()=>[])}catch(e){S.ld=false;S.err=rpc.last||String(e.message||e);render();return}S.ld=false;pgAnim();render()})();
+</script></body></html>

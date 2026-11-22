@@ -137,7 +137,7 @@ const withTO=(p,ms=90000)=>Promise.race([p,new Promise((_,j)=>setTimeout(()=>j(n
 async function runAd(a){
  const fn=a.id==='monetag'?window[ADSET.monetagFn]:a.id==='gigapub'?window.showGiga:null;
  if(typeof fn!=='function'){S.adErr=a.name+' SDK লোড হয়নি';return false}
- toast('বিজ্ঞাপন লোড হচ্ছে…');
+ toast(a.name+' বিজ্ঞাপন লোড হচ্ছে…');
  try{await withTO(Promise.resolve(fn.call(window)));return true}
  catch(e){S.adErr=a.name+': '+((e&&(e.message||e.error||e.reason))||e||'বিজ্ঞাপন নেই');console.warn(S.adErr);return false}}
 async function showAds(order,n){let shown=0;for(const p of order){const a=ADS.find(x=>x.id==p);while(shown<n){if(shown>0)toast('আরও '+(n-shown)+'টি বিজ্ঞাপন…');let ok=false;try{ok=await runAd(a)}catch(e){ok=false}if(!ok)break;shown++}if(shown>=n)break}return shown>=n}

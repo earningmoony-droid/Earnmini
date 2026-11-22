@@ -296,7 +296,7 @@ const A={
  ci:()=>guard(async()=>{await rpc('daily_checkin');await sync();S.me.checked=true;popup(true,'Check-in সম্পন্ন!',50,'আগামীকাল আবার আসুন')}),
  ad:id=>guard(async()=>{
   if(id==='adsterra'){const ss=await rpc('start_ad',{p_provider:id});closeM();tg.openLink(ADSET.adsterraUrl);return adWait(ss.id)}
-  S.adErr='';const order=(id==='any'||id==='monetag')?['monetag','gigapub']:['gigapub','monetag'],ss=await rpc('start_ad',{p_provider:order[0]});
+  S.adErr='';const order=id==='any'?['monetag','gigapub']:[id],ss=await rpc('start_ad',{p_provider:order[0]});
   if(await showAds(order,CF().ad_count))return await claimAd(ss.id);
   toast('এখন বিজ্ঞাপন পাওয়া যাচ্ছে না'+(S.adErr?' ('+S.adErr+')':'')+', coin যোগ হয়নি। একটু পরে চেষ্টা করুন','err')}),
  claim:sid=>guard(()=>claimAd(sid)),

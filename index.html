@@ -5,9 +5,6 @@
 <title>EarnMini AI</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
-<script src='https://libtl.com/sdk.js' data-zone='9125921' data-sdk='show_9125921'></script>
-<script src="https://ad.gigapub.tech/script?id=9315"></script>
 <style>
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 :root{--bg:#070b16;--g:#ffffff12;--gb:#ffffff22;--t:#eef1fb;--m:#8f9ac0;--c:#22d3ee;--v:#8b5cf6;--nav:#0d1326d9;--ok:#4ade80;--no:#f87171;--sh:0 12px 32px #0006;--e:cubic-bezier(.2,.8,.2,1)}
@@ -110,6 +107,9 @@ document.body.insertAdjacentHTML('afterbegin','<svg width="0" height="0" style="
 const I=(n,c='')=>`<svg class="ic ${c}"><use href="#i-${n}"/></svg>`;
 /* ===== কোর ===== */
 const tg=Telegram.WebApp;tg.ready();tg.expand();try{tg.disableVerticalSwipes&&tg.disableVerticalSwipes()}catch(e){}
+/* বিজ্ঞাপন SDK ব্যাকগ্রাউন্ডে লোড হয়: ad সার্ভার ধীর হলেও অ্যাপ কখনো আটকাবে না */
+function loadSdk(src,data){const e=document.createElement('script');e.src=src;e.async=true;for(const k in(data||{}))e.setAttribute(k,data[k]);e.onerror=()=>{};document.head.appendChild(e)}
+setTimeout(()=>{loadSdk('https://libtl.com/sdk.js',{'data-zone':'9125921','data-sdk':'show_9125921'});loadSdk('https://ad.gigapub.tech/script?id=9315')},300);
 const sb=supabase.createClient(CFG.SB_URL,CFG.SB_KEY);
 const $=s=>document.querySelector(s),wait=ms=>new Promise(r=>setTimeout(r,ms));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -122,22 +122,23 @@ function closeM(){$('#modal').classList.remove('on')}
 $('#modal').onclick=e=>{if(e.target.id==='modal')closeM()};
 async function rpc(f,a={},q){
  if(!tg.initData){const m='Telegram Mini App এর ভেতর থেকে খুলুন (সাধারণ browser এ চলবে না)';rpc.last=m;q||toast(m,'err');throw new Error(m)}
- let data,error;try{({data,error}=await sb.functions.invoke('super-endpoint',{body:{action:f,args:a,initData:tg.initData}}))}catch(e){error=e}
- if(error){let m=error.message||'সংযোগ ব্যর্থ';const c=error.context;
+ let data,error;try{({data,error}=await Promise.race([sb.functions.invoke('super-endpoint',{body:{action:f,args:a,initData:tg.initData}}),new Promise((_,rj)=>setTimeout(()=>rj(new Error('TIMEOUT')),25000))]))}catch(e){error=e}
+ if(error){let m=error.message||'সংযোগ ব্যর্থ';if(m==='TIMEOUT')m='সার্ভার সাড়া দিচ্ছে না (২৫ সেকেন্ড অপেক্ষা করা হয়েছে)।';const c=error.context;
   if(c&&typeof c.text==='function'){try{const t=await c.text();let j;try{j=JSON.parse(t)}catch(_){}m='['+c.status+'] '+((j&&(j.error||j.message||j.msg))||t||m)}catch(_){}}
   else if(/fetch|network/i.test(m))m='সার্ভারে পৌঁছানো যাচ্ছে না: ইন্টারনেট ও function নাম চেক করুন';
   rpc.last=m;q||toast(m,'err');throw error}
- if(data&&data.error){rpc.last=data.error;q||toast(data.error,'err');throw new Error(data.error)}
+ if(data&&data.error){if(data.error==='অবৈধ provider')data.error='GigaPub চালু হয়নি: SQL Editor-এ update3.sql চালান';rpc.last=data.error;q||toast(data.error,'err');throw new Error(data.error)}
  if(data&&typeof data==='object'&&!Array.isArray(data)&&data.message&&!('error' in data)&&Object.keys(data).length===1){const m='Edge Function এ এখনো ডিফল্ট টেমপ্লেট কোড চলছে ("'+data.message+'")। earnmini-api.ts এর কোড paste করে Deploy করুন।';rpc.last=m;q||toast(m,'err');throw new Error(m)}
  if(data&&data.bal!==undefined)data.bal=Number(data.bal)||0;return data}
 async function sync(){const m=await rpc('me');if(m&&m.bal!==undefined)S.me=Object.assign(S.me,m)}
 async function guard(fn){if(S.busy)return;S.busy=true;try{await fn()}catch(e){console.error(e)}finally{S.busy=false;render()}}
 /* ===== বিজ্ঞাপন ===== */
+async function waitFn(f,ms=3000){const t=Date.now();while(typeof f()!=='function'&&Date.now()-t<ms)await wait(150);return typeof f()==='function'}
 async function runAd(a){
- if(a.id==='monetag'){const fn=ADSET.monetagFn;if(typeof window[fn]!=='function'){toast('Monetag SDK এখনো লোড হয়নি; কিছুক্ষণ পরে চেষ্টা করুন','err');return false}toast('বিজ্ঞাপন লোড হচ্ছে…');await window[fn]();return true}
- if(a.id==='gigapub'){if(typeof window.showGiga!=='function'){toast('GigaPub SDK এখনো লোড হয়নি; কিছুক্ষণ পরে চেষ্টা করুন','err');return false}toast('বিজ্ঞাপন লোড হচ্ছে…');await window.showGiga();return true}
+ if(a.id==='monetag'){const fn=ADSET.monetagFn;if(!await waitFn(()=>window[fn])){S.adErr='Monetag SDK লোড হয়নি';return false}toast('বিজ্ঞাপন লোড হচ্ছে…');try{await window[fn]();return true}catch(e){S.adErr='Monetag: '+((e&&(e.message||e.error))||'এখন কোনো বিজ্ঞাপন নেই');return false}}
+ if(a.id==='gigapub'){if(!await waitFn(()=>window.showGiga)){S.adErr='GigaPub SDK লোড হয়নি (ইন্টারনেট বা অ্যাডব্লক সমস্যা)';return false}toast('বিজ্ঞাপন লোড হচ্ছে…');try{await window.showGiga();return true}catch(e){S.adErr='GigaPub: '+((e&&(e.message||e.error))||'এখন কোনো বিজ্ঞাপন নেই');return false}}
  return false}
-async function showAds(order,n){let shown=0;for(const p of order){const a=ADS.find(x=>x.id==p);while(shown<n){if(shown>0)toast('আরও '+(n-shown)+'টি বিজ্ঞাপন…');let ok=false;try{ok=await runAd(a)}catch(e){ok=false}if(!ok)break;shown++}if(shown>=n)break}return shown>=n}
+async function showAds(order,n){let shown=0;for(const p of order){const a=ADS.find(x=>x.id==p);while(shown<n){if(shown>0)toast('আরও '+(n-shown)+'টি বিজ্ঞাপন…');let ok=false;try{ok=await runAd(a)}catch(e){ok=false}if(!ok)break;shown++}if(shown>=n)break}return shown>0}
 async function claimAd(sid){const r=await rpc('claim_ad',{p_session:sid});await sync();closeM();popup(true,'বিজ্ঞাপন সম্পন্ন!',r.reward,'coin যোগ হয়েছে',false)}
 function adWait(sid){const t0=Date.now();clearInterval(S.adT);
  openM(`<div style="text-align:center"><div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/><circle id="rg" cx="50" cy="50" r="44"/></svg><b id="cd">${MIN_WATCH/1000}</b></div><h3>বিজ্ঞাপন পেজে থাকুন</h3><div class="m" style="margin-bottom:6px">কাউন্টডাউন শেষ হলে নিচের বোতাম চালু হবে।</div><button id="clm" class="btn" disabled onclick="A.claim('${sid}')">coin নিন</button><button class="btn g" onclick="clearInterval(S.adT);closeM()">বাতিল</button></div>`);
@@ -169,7 +170,7 @@ async function crFinish(c,m,lost,payout,crash){c.over=true;cancelAnimationFrame(
 /* ===== পেজ ===== */
 const NAV=[['home','home','হোম'],['ads','tv','Ads'],['games','game','গেম'],['refer','gift','রেফার'],['wallet','wallet','ওয়ালেট'],['me','user','প্রোফাইল']];
 const row=(ic,t,d,o,a,b,tag)=>`<div class="card it" onclick="${o}"><span class="ib" style="--a:${a};--b:${b}">${I(ic)}</span><div class="gx"><b>${t}</b><div class="m">${d}</div></div>${tag?`<span class="badge">${tag}</span>`:I('right','ch')}</div>`;
-const errCard=()=>{const e=S.err,h=/401/.test(e)?'Supabase → Edge Functions → super-endpoint → Settings থেকে "Verify JWT" বন্ধ করে Save করুন।':/404/.test(e)?'Function এর নাম super-endpoint আছে কি না দেখুন।':/500|42883|PGRST/.test(e)?'Function এর Logs দেখুন; setup.sql ও update.sql চালানো হয়েছে কি না নিশ্চিত করুন।':'';return `<div class="card empty" style="margin-top:20px">${I('wifi')}<b style="color:var(--t)">সংযোগ ব্যর্থ</b><div class="m" style="margin:8px 0;word-break:break-word">${esc(e)}</div>${h?`<div class="m" style="color:var(--c)">${esc(h)}</div>`:''}<button class="btn" onclick="location.reload()">আবার চেষ্টা করুন</button></div>`};
+const errCard=()=>{const e=S.err,h=/সাড়া দিচ্ছে না/.test(e)?'Supabase → Edge Functions → super-endpoint → Logs ট্যাবে কারণ দেখুন; Database-এ আটকে থাকা query থাকলে বন্ধ করুন।':/401/.test(e)?'Supabase → Edge Functions → super-endpoint → Settings থেকে "Verify JWT" বন্ধ করে Save করুন।':/404/.test(e)?'Function এর নাম super-endpoint আছে কি না দেখুন।':/500|42883|PGRST/.test(e)?'Function এর Logs দেখুন; setup.sql ও update.sql চালানো হয়েছে কি না নিশ্চিত করুন।':'';return `<div class="card empty" style="margin-top:20px">${I('wifi')}<b style="color:var(--t)">সংযোগ ব্যর্থ</b><div class="m" style="margin:8px 0;word-break:break-word">${esc(e)}</div>${h?`<div class="m" style="color:var(--c)">${esc(h)}</div>`:''}<button class="btn" onclick="location.reload()">আবার চেষ্টা করুন</button></div>`};
 const skel=()=>'<div class="card sk" style="height:130px"></div><div class="card sk"></div><div class="card sk" style="height:90px"></div>';
 const P={},PK=5000,BN='০১২৩৪৫৬৭৮৯';
 const num=v=>+String(v||'').replace(/[০-৯]/g,c=>BN.indexOf(c)).replace(/[^\d.-]/g,'')||0;
@@ -191,7 +192,7 @@ P.home=()=>{const m=S.me,b=Number(m.bal)||0;return `<div class="card hero"><div 
 ${vcard()}<div class="card"><div class="row"><b class="ttl">${I('cal')} Daily Check-in</b><span class="pill">+50 coin</span></div><button class="btn shine" ${m.checked?'disabled':''} onclick="A.ci()">${m.checked?I('check')+' আজকের check-in সম্পন্ন':'Check-in করুন'}</button></div>
 <div class="card"><div class="qa">${[['tv','Ads','ads','#8b5cf6','#6366f1'],['game','গেম','games','#22d3ee','#3b82f6'],['gift','রেফার','refer','#f472b6','#ec4899'],['wallet','ওয়ালেট','wallet','#4ade80','#16a34a']].map(([i,l,p,a,b])=>`<button onclick="go('${p}')"><span class="ib" style="--a:${a};--b:${b}">${I(i)}</span>${l}</button>`).join('')}</div></div>
 <div class="card"><h3>সাম্প্রতিক কার্যক্রম</h3>${hl(S.hist.slice(0,5))}</div>`};
-P.ads=()=>{const n=S.me.ads_today||0;return `<h3 class="ttl">${I('tv')} Ads Center</h3><div class="card"><div class="row"><b>আজকের বিজ্ঞাপন</b><span class="pill">${n}/20</span></div><div class="bar"><i style="width:${Math.min(100,n*5)}%"></i></div><div class="m">${CF().ad_count}টি বিজ্ঞাপন দেখলে +${CF().ad_reward} coin • দৈনিক সর্বোচ্চ ২০টি</div></div>
+P.ads=()=>{const n=S.me.ads_today||0;return `<h3 class="ttl">${I('tv')} Ads Center</h3><div class="card"><div class="row"><b>আজকের বিজ্ঞাপন</b><span class="pill">${n}/20</span></div><div class="bar"><i style="width:${Math.min(100,n*5)}%"></i></div><div class="m">${CF().ad_count}টি বিজ্ঞাপন দেখলে +${CF().ad_reward} coin • দৈনিক সর্বোচ্চ ২০টি</div><div class="m" style="margin-top:6px">SDK: Monetag ${typeof window[ADSET.monetagFn]==='function'?'✓':'✗'} • GigaPub ${typeof window.showGiga==='function'?'✓':'✗'}</div></div>
 ${row('spark','Monetag',`${CF().ad_count}টি বিজ্ঞাপন • +${CF().ad_reward} coin`,"A.adpanel('monetag')",'#8b5cf6','#6366f1')}
 ${row('play','GigaPub',`${CF().ad_count}টি বিজ্ঞাপন • +${CF().ad_reward} coin`,"A.ad('gigapub')",'#f59e0b','#ef4444')}
 ${row('link','Adsterra',`Direct Link • ১৫ সেকেন্ড • +${CF().adsterra_reward} coin`,"A.adpanel('adsterra')",'#22c55e','#15803d')}
@@ -290,9 +291,9 @@ const A={
  ci:()=>guard(async()=>{await rpc('daily_checkin');await sync();S.me.checked=true;popup(true,'Check-in সম্পন্ন!',50,'আগামীকাল আবার আসুন')}),
  ad:id=>guard(async()=>{
   if(id==='adsterra'){const ss=await rpc('start_ad',{p_provider:id});closeM();tg.openLink(ADSET.adsterraUrl);return adWait(ss.id)}
-  const order=id==='any'?['monetag','gigapub']:[id],ss=await rpc('start_ad',{p_provider:order[0]});
+  S.adErr='';const order=id==='any'?['monetag','gigapub']:[id],ss=await rpc('start_ad',{p_provider:order[0]});
   if(await showAds(order,CF().ad_count))return await claimAd(ss.id);
-  toast('এখন বিজ্ঞাপন পাওয়া যাচ্ছে না, coin যোগ হয়নি। একটু পরে চেষ্টা করুন','err')}),
+  toast('বিজ্ঞাপন দেখানো যায়নি'+(S.adErr?' — '+S.adErr:'')+'। coin যোগ হয়নি','err')}),
  claim:sid=>guard(()=>claimAd(sid)),
  ud:d=>guard(async()=>{if(!betOk())return;trInit();const r=await rpc('play_updown',{p_bet:S.bet,p_dir:d}),t=S.tr,e=t.v.at(-1),up=r.dir=='up',sg=up?1:-1;t.e=e;
   for(let i=1;i<=12;i++){const last=t.v.at(-1),goal=e+sg*(1.5+Math.random())*i/12;let nx=last+(goal-last)*.5+(Math.random()-.5)*.5;if(i==12)nx=e+sg*(1.3+Math.random());trTick(nx-last);await wait(230)}
@@ -360,4 +361,3 @@ async function go(p){if(S.scPend){S.scPend=0;S.sc=null;sync().then(render)}close
 setTheme(LS.get('th')||tg.colorScheme||'dark');applyFx();initCoins();loop();pgAnim();
 (async()=>{render();try{const m=await rpc('me');if(!m||m.bal===undefined){rpc.last='Edge Function ভুল উত্তর দিচ্ছে (balance নেই)। earnmini-api.ts এর কোড deploy করে update.sql চালানো হয়েছে কি দেখুন।';throw new Error(rpc.last)}S.me=m;const h=await rpc('history').catch(()=>[]);S.hist=Array.isArray(h)?h:[]}catch(e){S.ld=false;S.err=rpc.last||String(e.message||e);render();return}S.ld=false;pgAnim();render()})();
 </script></body></html>
-
